@@ -14,12 +14,15 @@ Gem::Specification.new do |s|
   s.rubyforge_project = "autoscaler"
 
   s.files         = <<MANIFEST
-Gemfile
-Rakefile
-lib/autoscaler.rb
+lib/autoscaler/heroku_scaler.rb
+lib/autoscaler/sidekiq.rb
 lib/autoscaler/version.rb
+lib/autoscaler.rb
 MANIFEST
   s.test_files    = <<TEST_MANIFEST
+spec/autoscaler/heroku_scaler_spec.rb
+spec/autoscaler/sidekiq_spec.rb
+spec/spec_helper.rb
 TEST_MANIFEST
   s.require_paths = ["lib"]
 
@@ -27,6 +30,7 @@ TEST_MANIFEST
   s.add_runtime_dependency "heroku-api"
 
   s.add_development_dependency "bundler"
+  s.add_development_dependency "mast"
   s.add_development_dependency "rspec"
   s.add_development_dependency "guard-rspec"
 end

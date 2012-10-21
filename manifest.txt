@@ -1,0 +1,13 @@
+#!mast *
+autoscaler.gemspec
+Gemfile
+Gemfile.lock
+Guardfile
+lib/autoscaler/heroku_scaler.rb
+lib/autoscaler/sidekiq.rb
+lib/autoscaler/version.rb
+lib/autoscaler.rb
+Rakefile
+spec/autoscaler/heroku_scaler_spec.rb
+spec/autoscaler/sidekiq_spec.rb
+spec/spec_helper.rb
