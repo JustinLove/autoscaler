@@ -13,13 +13,13 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = "autoscaler"
 
-  s.files         = <<MANIFEST
+  s.files         = <<MANIFEST.split("\n")
 lib/autoscaler/heroku_scaler.rb
 lib/autoscaler/sidekiq.rb
 lib/autoscaler/version.rb
 lib/autoscaler.rb
 MANIFEST
-  s.test_files    = <<TEST_MANIFEST
+  s.test_files    = <<TEST_MANIFEST.split("\n")
 spec/autoscaler/heroku_scaler_spec.rb
 spec/autoscaler/sidekiq_spec.rb
 spec/spec_helper.rb
