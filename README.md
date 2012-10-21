@@ -1,6 +1,6 @@
 # Sidekiq Heroku Autoscaler
 
-[Sidekiq](https://github.com/mperham/sidekiq) performs background jobs.  While it's threading model allows it to scale easier than than background processing systems, people running test or lightly loaded systems on [Heroku](http://www.heroku.com/) still want to scale down to zero to avoid racking up charges.
+[Sidekiq](https://github.com/mperham/sidekiq) performs background jobs.  While it's threading model allows it to scale easier than worker-pre-process background systems, people running test or lightly loaded systems on [Heroku](http://www.heroku.com/) still want to scale down to zero to avoid racking up charges.
 
 ## Requirements
 
@@ -30,6 +30,10 @@ Install the middleware in your `Sidekiq.configure_` blocks
         chain.add(Autoscaler::Sidekiq::Server, Autoscaler::HerokuScaler.new, 60)
       end
     end
+
+## Long Jobs
+
+Since the shutdown check gets performed every time a job completes, the timeout will need to be longer than the longest job.  For mixed workloads, you might want to have multiple sidekiq processes defined.  I use one with many workers for general work, and a single-worker process for long import jobs.  See `examples/complex.rb`
 
 ## Tests
 

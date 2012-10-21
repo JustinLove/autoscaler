@@ -23,6 +23,11 @@ Sidekiq.configure_client do |config|
   end
 end
 
+# define HEROKU_PROCESS in the Procfile:
+#
+#    default: env HEROKU_PROCESS=default bundle exec sidekiq -r ./background/boot.rb
+#    import:  env HEROKU_PROCESS=import bundle exec sidekiq -q import -c 1 -r ./background/boot.rb
+
 Sidekiq.configure_server do |config|
   config.server_middleware do |chain|
     if heroku && ENV['HEROKU_PROCESS'] && heroku[ENV['HEROKU_PROCESS']]
