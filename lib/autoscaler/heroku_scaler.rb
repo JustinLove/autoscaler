@@ -1,7 +1,11 @@
 require 'heroku-api'
 
 module Autoscaler
+  # Wraps the Heroku API to provide just the interface that we need for scaling.
   class HerokuScaler
+    # @param [String] type process type this scaler controls
+    # @param [String] key Heroku API key
+    # @param [String] app Heroku app name
     def initialize(
         type = 'worker',
         key = ENV['HERKOU_API_KEY'],
@@ -16,6 +20,8 @@ module Autoscaler
     attr_reader :app
     attr_reader :type
 
+    # Read the current worker count (value may be cached)
+    # @return [Numeric] number of workers
     def workers
       if known?
         @workers
@@ -24,6 +30,8 @@ module Autoscaler
       end
     end
 
+    # Set the number of workers (noop if workers the same)
+    # @param [Numeric] n number of workers
     def workers=(n)
       if n != @workers || !known?
         p "Scaling #{type} to #{n}"

@@ -1,5 +1,5 @@
 require "autoscaler/version"
 
+# Namespace module; no code
 module Autoscaler
-  # Your code goes here...
 end
