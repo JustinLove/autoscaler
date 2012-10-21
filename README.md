@@ -45,3 +45,7 @@ The HerokuScaler is not tested by default because it makes live API requests.  S
 Justin Love, [@wondible](http://twitter.com/wondible), [https://github.com/JustinLove](https://github.com/JustinLove)
 
 Ported to Heroku-Api by Fix Peña, [https://github.com/fixr](https://github.com/fixr)
+
+## Licence
+
+Released under the [MIT license](http://www.opensource.org/licenses/mit-license.php).
