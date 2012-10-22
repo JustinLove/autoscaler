@@ -31,7 +31,13 @@ Install the middleware in your `Sidekiq.configure_` blocks
       end
     end
 
-## Long Jobs
+## Limits and Challenges
+
+- HerokuScaler includes an attempt at current-worker cache that may be overcomplication, and doesn't work very well (see next)
+- Multiple threads often send scaling requests at once.  Heroku seems to handle this well.
+- Workers sleep-loop and are not actually returned to the pool; when a job or timeout happen, they can all release at once.
+
+### Long Jobs
 
 Since the shutdown check gets performed every time a job completes, the timeout will need to be longer than the longest job.  For mixed workloads, you might want to have multiple sidekiq processes defined.  I use one with many workers for general work, and a single-worker process for long import jobs.  See `examples/complex.rb`
 
