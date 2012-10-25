@@ -1,5 +1,8 @@
 #!mast *
 autoscaler.gemspec
+CHANGELOG.md
+examples/complex.rb
+examples/simple.rb
 Gemfile
 Gemfile.lock
 Guardfile
@@ -7,7 +10,9 @@ lib/autoscaler/heroku_scaler.rb
 lib/autoscaler/sidekiq.rb
 lib/autoscaler/version.rb
 lib/autoscaler.rb
+pkg/autoscaler-0.0.1.gem
 Rakefile
+README.md
 spec/autoscaler/heroku_scaler_spec.rb
 spec/autoscaler/sidekiq_spec.rb
 spec/spec_helper.rb

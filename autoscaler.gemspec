@@ -18,6 +18,10 @@ lib/autoscaler/heroku_scaler.rb
 lib/autoscaler/sidekiq.rb
 lib/autoscaler/version.rb
 lib/autoscaler.rb
+README.md
+CHANGELOG.md
+examples/complex.rb
+examples/simple.rb
 MANIFEST
   s.test_files    = <<TEST_MANIFEST.split("\n")
 spec/autoscaler/heroku_scaler_spec.rb
@@ -26,7 +30,7 @@ spec/spec_helper.rb
 TEST_MANIFEST
   s.require_paths = ["lib"]
 
-  s.add_runtime_dependency "sidekiq", '~> 2.2.1'
+  s.add_runtime_dependency "sidekiq", '~> 2.2'
   s.add_runtime_dependency "heroku-api"
 
   s.add_development_dependency "bundler"
