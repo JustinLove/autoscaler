@@ -8,7 +8,7 @@ module Autoscaler
     # @param [String] app Heroku app name
     def initialize(
         type = 'worker',
-        key = ENV['HERKOU_API_KEY'],
+        key = ENV['HEROKU_API_KEY'],
         app = ENV['HEROKU_APP'])
       @client = Heroku::API.new(:api_key => key)
       @type = type
