@@ -6,19 +6,22 @@ module Autoscaler
     # @param [String] type process type this scaler controls
     # @param [String] key Heroku API key
     # @param [String] app Heroku app name
-    def initialize(
-        type = 'worker',
-        key = ENV['HEROKU_API_KEY'],
-        app = ENV['HEROKU_APP'])
-      @client = Heroku::API.new(:api_key => key)
-      @type = type
-      @app = app
-      @workers = 0
-      @known = Time.now - 1
+    # @param [String] max_workers Heroku maximum workers
+    def initialize( 
+        type = Autoscaler::Configuration.type, 
+        key = Autoscaler::Configuration.key, 
+        app = Autoscaler::Configuration.app, 
+        max_workers = Autoscaler::Configuration.max_workers)
+      @type         = type
+      @app          = app
+      @max_workers  = max_workers
+      @workers      = 0
+      @known        = Time.now - 1
     end
 
     attr_reader :app
     attr_reader :type
+    attr_reader :max_workers
 
     # Read the current worker count (value may be cached)
     # @return [Numeric] number of workers
@@ -33,6 +36,8 @@ module Autoscaler
     # Set the number of workers (noop if workers the same)
     # @param [Numeric] n number of workers
     def workers=(n)
+      n = [n, @max_workers].min
+      
       if n != @workers || !known?
         p "Scaling #{type} to #{n}"
         client.post_ps_scale(app, type, n)
@@ -40,8 +45,11 @@ module Autoscaler
       end
     end
 
+    def client
+      @client ||= Heroku::API.new(:api_key => @key)
+    end
+
     private
-    attr_reader :client
 
     def know(n)
       @known = Time.now + 5
