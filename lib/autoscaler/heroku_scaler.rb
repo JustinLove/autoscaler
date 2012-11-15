@@ -1,3 +1,4 @@
+require 'autoscaler/configuration'
 require 'heroku-api'
 
 module Autoscaler
