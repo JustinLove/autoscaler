@@ -52,7 +52,7 @@ module Autoscaler
       @type        = 'worker'                   # the default queue type
       @key          = ENV['HEROKU_API_KEY']     # key of heroku's api
       @app          = ENV['HEROKU_APP']         # name of the app on heroku
-      @max_workers  = 1                         # Maximum number of workers
+      @max_workers  = nil                       # Maximum number of workers
     end
 
     instance_eval(OPTIONS.map do |option|

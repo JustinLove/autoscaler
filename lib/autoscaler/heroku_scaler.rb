@@ -37,7 +37,7 @@ module Autoscaler
     # Set the number of workers (noop if workers the same)
     # @param [Numeric] n number of workers
     def workers=(n)
-      n = [n, @max_workers].min
+      n = [n, @max_workers].min if @max_workers.to_i > 0
       
       if n != @workers || !known?
         p "Scaling #{type} to #{n}"
