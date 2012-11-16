@@ -6,8 +6,6 @@ describe Autoscaler::HerokuScaler, :online => true do
   let(:client) {cut.new}
   subject {client}
 
-  its(:workers) {should == 0}
-
   describe 'scaled' do
     around do |example|
       client.workers = 1
@@ -16,5 +14,19 @@ describe Autoscaler::HerokuScaler, :online => true do
     end
 
     its(:workers) {should == 1}
+  end
+
+  describe 'scaled to max workers' do
+    Autoscaler.configure do |config|
+      config.max_workers = 2
+    end
+    
+    around do |example|
+      client.workers = 3
+      example.yield
+      client.workers = 0
+    end
+
+    its(:workers) {should == 2}
   end
 end
