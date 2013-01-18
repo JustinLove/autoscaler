@@ -55,8 +55,12 @@ module Autoscaler
       end
       
       def scheduled_work?
-        ::Sidekiq.redis { |conn| conn.zcard("retry") > 0 || conn.zcard("scheduled") > 0 } 
+        ::Sidekiq.redis { |c| c.zcard("schedule") > 0 } 
       end
+      
+      def retry_work?
+        ::Sidekiq.redis { |c| c.zcard("retry") > 0 } 
+      end  
 
       def pending_work?
         queues.any? {|q| !empty?(q)}
@@ -66,6 +70,7 @@ module Autoscaler
         loop do
           return if pending_work?
           return if scheduled_work?
+          return if retry_work?
           return @scaler.workers = 0 if idle?
           sleep(0.5)
         end
