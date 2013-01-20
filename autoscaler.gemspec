@@ -37,4 +37,5 @@ TEST_MANIFEST
   s.add_development_dependency "mast"
   s.add_development_dependency "rspec"
   s.add_development_dependency "guard-rspec"
+  s.add_development_dependency "guard-process"
 end

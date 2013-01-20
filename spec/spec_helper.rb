@@ -1,5 +1,5 @@
 require 'sidekiq'
-REDIS = Sidekiq::RedisConnection.create(:url => "redis://localhost/15", :namespace => 'autoscaler')
+REDIS = Sidekiq::RedisConnection.create(:url => 'http://localhost:9736', :namespace => 'autoscaler')
 
 RSpec.configure do |config|
   config.mock_with :rspec

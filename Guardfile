@@ -1,3 +1,7 @@
+guard 'process', :name => 'redis', :command => 'redis-server spec/redis_test.conf' do
+  watch('spec/redis_test.conf')
+end
+
 guard 'rspec',
     :version => 2,
     :cli => '--color --format d',
