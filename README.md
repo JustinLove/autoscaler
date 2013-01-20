@@ -36,14 +36,16 @@ Install the middleware in your `Sidekiq.configure_` blocks
 - HerokuScaler includes an attempt at current-worker cache that may be overcomplication, and doesn't work very well (see next)
 - Multiple threads often send scaling requests at once.  Heroku seems to handle this well.
 - Workers sleep-loop and are not actually returned to the pool; when a job or timeout happen, they can all release at once.
+- If you set job-timeouts on your tasks, they will likely trigger on the sleep-loop (see previous).
+- The retry and schedule lists are considered - if you schedule a long-running task, the process will not scale-down.
 
 ### Long Jobs
 
-Since the shutdown check gets performed every time a job completes, the timeout will need to be longer than the longest job.  For mixed workloads, you might want to have multiple sidekiq processes defined.  I use one with many workers for general work, and a single-worker process for long import jobs.  See `examples/complex.rb`
+Since the shutdown check gets performed every time a job completes, the shutdown-timeout will need to be longer than the longest job.  For mixed workloads, you might want to have multiple sidekiq processes defined.  I use one with many workers for general work, and a single-worker process for long import jobs.  See `examples/complex.rb`
 
 ## Tests
 
-The project is setup to run RSpec with Guard.
+The project is setup to run RSpec with Guard.  It expects a redis instance on a custom port, which is started by the Guardfile.
 
 The HerokuScaler is not tested by default because it makes live API requests.  Specify `HEROKU_APP` and `HEROKU_API_KEY` on the command line, and then watch your app's logs.
 
@@ -55,6 +57,8 @@ The HerokuScaler is not tested by default because it makes live API requests.  S
 Justin Love, [@wondible](http://twitter.com/wondible), [https://github.com/JustinLove](https://github.com/JustinLove)
 
 Ported to Heroku-Api by Fix Peña, [https://github.com/fixr](https://github.com/fixr)
+
+Retry/schedule queues by Matt Anderson [https://github.com/tonkapark](https://github.com/tonkapark)
 
 ## Licence
 

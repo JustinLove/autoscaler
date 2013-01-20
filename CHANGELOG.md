@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.0
+
+- The `retry` and `scheduled` queues are now considered for shutdown
+- Testing: Guard starts up an isolated redis instance
+
 ## 0.0.3
 
 - Typo correction
