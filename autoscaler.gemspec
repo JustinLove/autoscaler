@@ -24,9 +24,11 @@ examples/complex.rb
 examples/simple.rb
 MANIFEST
   s.test_files    = <<TEST_MANIFEST.split("\n")
+Guardfile
 spec/autoscaler/heroku_scaler_spec.rb
 spec/autoscaler/sidekiq_spec.rb
 spec/spec_helper.rb
+spec/redis_test.conf
 TEST_MANIFEST
   s.require_paths = ["lib"]
 

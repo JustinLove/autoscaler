@@ -11,8 +11,11 @@ lib/autoscaler/sidekiq.rb
 lib/autoscaler/version.rb
 lib/autoscaler.rb
 pkg/autoscaler-0.0.1.gem
+pkg/autoscaler-0.0.2.gem
+pkg/autoscaler-0.0.3.gem
 Rakefile
 README.md
 spec/autoscaler/heroku_scaler_spec.rb
 spec/autoscaler/sidekiq_spec.rb
+spec/redis_test.conf
 spec/spec_helper.rb
