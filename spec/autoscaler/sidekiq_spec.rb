@@ -14,7 +14,7 @@ describe Autoscaler::Sidekiq do
     @redis = Sidekiq.redis = REDIS
     Sidekiq.redis {|c| c.flushdb }
   end
-    
+
   let(:scaler) do
     Scaler.new(workers)
   end
@@ -37,8 +37,9 @@ describe Autoscaler::Sidekiq do
 
   describe Autoscaler::Sidekiq::Server do
     let(:cut) {Autoscaler::Sidekiq::Server}
-    let(:sa) {cut.new(scaler, 0)}
+    let(:sa) {cut.new(scaler, 0, ['queue'])}
     let(:workers) {1}
+    let(:payload) { Sidekiq.dump_json('queue' => 'queue') }
 
     describe 'scales' do
       context "with only enqueued work" do
@@ -46,28 +47,48 @@ describe Autoscaler::Sidekiq do
         subject {scaler.workers}
         it {should == 0}
       end
-      
+
       context "with schedule work" do
-        before do 
-          Sidekiq.redis { |c| c.zadd('schedule', (Time.now.to_f + 30.to_f).to_s, '{}' )}
+        before do
+          Sidekiq.redis { |c| c.zadd('schedule', (Time.now.to_f + 30.to_f).to_s, payload)}
           sa.call(Object.new, {}, 'queue') {}
         end
         subject {scaler.workers}
         it {should == 1}
       end
-      
+
+      context "with schedule work in another queue" do
+        let(:payload) { Sidekiq.dump_json('queue' => 'another_queue') }
+        before do
+          Sidekiq.redis { |c| c.zadd('schedule', (Time.now.to_f + 30.to_f).to_s, payload)}
+          sa.call(Object.new, {}, 'queue') {}
+        end
+        subject {scaler.workers}
+        it {should == 0}
+      end
+
       context "with retry work" do
         before do
-          Sidekiq.redis { |c| c.zadd('retry', (Time.now.to_f + 30.to_f).to_s, '{}' )}
+          Sidekiq.redis { |c| c.zadd('retry', (Time.now.to_f + 30.to_f).to_s, payload)}
           sa.call(Object.new, {}, 'queue') {}
-        end  
-        subject {scaler.workers}      
+        end
+        subject {scaler.workers}
         it {should == 1}
       end
+
+      context "with retry work in another queue" do
+        let(:payload) { Sidekiq.dump_json('queue' => 'another_queue') }
+        before do
+          Sidekiq.redis { |c| c.zadd('retry', (Time.now.to_f + 30.to_f).to_s, payload)}
+          sa.call(Object.new, {}, 'queue') {}
+        end
+        subject {scaler.workers}
+        it {should == 0}
+      end
     end
-    
+
     describe 'yields' do
       it {sa.call(Object.new, {}, 'queue') {:foo}.should == :foo}
-    end    
+    end
   end
 end

@@ -53,14 +53,25 @@ module Autoscaler
       def empty?(name)
         ::Sidekiq.redis { |conn| conn.llen("queue:#{name}") == 0 }
       end
-      
+
       def scheduled_work?
-        ::Sidekiq.redis { |c| c.zcard("schedule") > 0 } 
+        empty_sorted_set?("schedule")
       end
-      
+
       def retry_work?
-        ::Sidekiq.redis { |c| c.zcard("retry") > 0 } 
-      end  
+        empty_sorted_set?("retry")
+      end
+
+      def empty_sorted_set?(sorted_set)
+        ::Sidekiq.redis do |conn|
+          messages = conn.zrangebyscore(sorted_set, '-inf', '+inf')
+
+          messages.count do |message|
+            msg = ::Sidekiq.load_json(message)
+            queues.include?(msg['queue'])
+          end > 0
+        end
+      end
 
       def pending_work?
         queues.any? {|q| !empty?(q)}
