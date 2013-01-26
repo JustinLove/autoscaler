@@ -21,29 +21,29 @@ describe Autoscaler::Sidekiq do
 
   describe Autoscaler::Sidekiq::Client do
     let(:cut) {Autoscaler::Sidekiq::Client}
-    let(:sa) {cut.new('queue' => scaler)}
+    let(:client) {cut.new('queue' => scaler)}
     let(:workers) {0}
 
     describe 'scales' do
-      before {sa.call(Class, {}, 'queue') {}}
+      before {client.call(Class, {}, 'queue') {}}
       subject {scaler.workers}
       it {should == 1}
     end
 
     describe 'yields' do
-      it {sa.call(Class, {}, 'queue') {:foo}.should == :foo}
+      it {client.call(Class, {}, 'queue') {:foo}.should == :foo}
     end
   end
 
   describe Autoscaler::Sidekiq::Server do
     let(:cut) {Autoscaler::Sidekiq::Server}
-    let(:sa) {cut.new(scaler, 0)}
+    let(:server) {cut.new(scaler, 0)}
     let(:workers) {1}
 
     describe 'scales' do
       context "with no work" do
         before do
-          sa.call(Object.new, {}, 'queue') {}
+          server.call(Object.new, {}, 'queue') {}
         end
         subject {scaler.workers}
         it {should == 0}
@@ -53,8 +53,8 @@ describe Autoscaler::Sidekiq do
     describe 'does not scale' do
       context "with enqueued work" do
         before do
-          sa.stub(:all_queues).and_return({'queue' => 1})
-          sa.call(Object.new, {}, 'queue') {}
+          server.stub(:all_queues).and_return({'queue' => 1})
+          server.call(Object.new, {}, 'queue') {}
         end
         subject {scaler.workers}
         it {should == 1}
@@ -62,8 +62,8 @@ describe Autoscaler::Sidekiq do
 
       context "with schedule work" do
         before do
-          sa.stub(:scheduled_work?).and_return(true)
-          sa.call(Object.new, {}, 'queue') {}
+          server.stub(:scheduled_work?).and_return(true)
+          server.call(Object.new, {}, 'queue') {}
         end
         subject {scaler.workers}
         it {should == 1}
@@ -71,8 +71,8 @@ describe Autoscaler::Sidekiq do
 
       context "with retry work" do
         before do
-          sa.stub(:retry_work?).and_return(true)
-          sa.call(Object.new, {}, 'queue') {}
+          server.stub(:retry_work?).and_return(true)
+          server.call(Object.new, {}, 'queue') {}
         end
         subject {scaler.workers}
         it {should == 1}
@@ -80,7 +80,7 @@ describe Autoscaler::Sidekiq do
     end
 
     describe 'yields' do
-      it {sa.call(Object.new, {}, 'queue') {:foo}.should == :foo}
+      it {server.call(Object.new, {}, 'queue') {:foo}.should == :foo}
     end
   end
 end
