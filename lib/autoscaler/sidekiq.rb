@@ -53,10 +53,10 @@ module Autoscaler
       def scheduled_work?
         ::Sidekiq::ScheduledSet.new.size > 0
       end
-      
+
       def retry_work?
         ::Sidekiq::RetrySet.new.size > 0
-      end  
+      end
 
       def pending_work?
         queued_work? || scheduled_work? || retry_work?

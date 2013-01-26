@@ -14,7 +14,7 @@ describe Autoscaler::Sidekiq do
     @redis = Sidekiq.redis = REDIS
     Sidekiq.redis {|c| c.flushdb }
   end
-    
+
   let(:scaler) do
     Scaler.new(workers)
   end
@@ -61,26 +61,26 @@ describe Autoscaler::Sidekiq do
       end
 
       context "with schedule work" do
-        before do 
+        before do
           sa.stub(:scheduled_work?).and_return(true)
           sa.call(Object.new, {}, 'queue') {}
         end
         subject {scaler.workers}
         it {should == 1}
       end
-      
+
       context "with retry work" do
         before do
           sa.stub(:retry_work?).and_return(true)
           sa.call(Object.new, {}, 'queue') {}
-        end  
-        subject {scaler.workers}      
+        end
+        subject {scaler.workers}
         it {should == 1}
       end
     end
-    
+
     describe 'yields' do
       it {sa.call(Object.new, {}, 'queue') {:foo}.should == :foo}
-    end    
+    end
   end
 end
