@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+
+- Raise minimum Sidekiq version to 2.6.1 to take advantage of Stats API
+
 ## 0.1.0
 
 - The `retry` and `scheduled` queues are now considered for shutdown

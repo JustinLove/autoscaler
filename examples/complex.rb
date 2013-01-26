@@ -1,4 +1,3 @@
-require 'securerandom' # bug in Sidekiq as of 2.2.1
 require 'sidekiq'
 require 'autoscaler/sidekiq'
 require 'autoscaler/heroku_scaler'

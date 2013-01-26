@@ -1,4 +1,3 @@
-require 'securerandom' # bug in Sidekiq as of 2.2.1
 require 'sidekiq'
 
 module Autoscaler
@@ -42,35 +41,30 @@ module Autoscaler
       end
 
       private
-      def queues
-        @specified_queues || registered_queues
+      def all_queues
+        ::Sidekiq::Stats.new.queues
       end
 
-      def registered_queues
-        ::Sidekiq.redis { |x| x.smembers('queues') }
+      def queued_work?
+        queues = all_queues
+        (@specified_queues || queues.keys).any? {|name| queues[name] > 0}
       end
 
-      def empty?(name)
-        ::Sidekiq.redis { |conn| conn.llen("queue:#{name}") == 0 }
-      end
-      
       def scheduled_work?
-        ::Sidekiq.redis { |c| c.zcard("schedule") > 0 } 
+        ::Sidekiq::ScheduledSet.new.size > 0
       end
       
       def retry_work?
-        ::Sidekiq.redis { |c| c.zcard("retry") > 0 } 
+        ::Sidekiq::RetrySet.new.size > 0
       end  
 
       def pending_work?
-        queues.any? {|q| !empty?(q)}
+        queued_work? || scheduled_work? || retry_work?
       end
 
       def wait_for_task_or_scale
         loop do
           return if pending_work?
-          return if scheduled_work?
-          return if retry_work?
           return @scaler.workers = 0 if idle?
           sleep(0.5)
         end

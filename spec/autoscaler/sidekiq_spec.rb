@@ -41,15 +41,28 @@ describe Autoscaler::Sidekiq do
     let(:workers) {1}
 
     describe 'scales' do
-      context "with only enqueued work" do
-        before{sa.call(Object.new, {}, 'queue') {}}
+      context "with no work" do
+        before do
+          sa.call(Object.new, {}, 'queue') {}
+        end
         subject {scaler.workers}
         it {should == 0}
       end
-      
+    end
+
+    describe 'does not scale' do
+      context "with enqueued work" do
+        before do
+          sa.stub(:all_queues).and_return({'queue' => 1})
+          sa.call(Object.new, {}, 'queue') {}
+        end
+        subject {scaler.workers}
+        it {should == 1}
+      end
+
       context "with schedule work" do
         before do 
-          Sidekiq.redis { |c| c.zadd('schedule', (Time.now.to_f + 30.to_f).to_s, '{}' )}
+          sa.stub(:scheduled_work?).and_return(true)
           sa.call(Object.new, {}, 'queue') {}
         end
         subject {scaler.workers}
@@ -58,7 +71,7 @@ describe Autoscaler::Sidekiq do
       
       context "with retry work" do
         before do
-          Sidekiq.redis { |c| c.zadd('retry', (Time.now.to_f + 30.to_f).to_s, '{}' )}
+          sa.stub(:retry_work?).and_return(true)
           sa.call(Object.new, {}, 'queue') {}
         end  
         subject {scaler.workers}      

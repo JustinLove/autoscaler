@@ -32,7 +32,7 @@ spec/redis_test.conf
 TEST_MANIFEST
   s.require_paths = ["lib"]
 
-  s.add_runtime_dependency "sidekiq", '~> 2.2'
+  s.add_runtime_dependency "sidekiq", '>= 2.6.1', '< 3.0'
   s.add_runtime_dependency "heroku-api"
 
   s.add_development_dependency "bundler"
