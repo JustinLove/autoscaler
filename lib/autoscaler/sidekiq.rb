@@ -63,14 +63,8 @@ module Autoscaler
       end
 
       def empty_sorted_set?(sorted_set)
-        ::Sidekiq.redis do |conn|
-          messages = conn.zrangebyscore(sorted_set, '-inf', '+inf')
-
-          messages.count do |message|
-            msg = ::Sidekiq.load_json(message)
-            queues.include?(msg['queue'])
-          end > 0
-        end
+        ss = ::Sidekiq::SortedSet.new(sorted_set)
+        ss.count { |job| queues.include?(job.queue) } > 0
       end
 
       def pending_work?
