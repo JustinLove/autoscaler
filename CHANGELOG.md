@@ -3,6 +3,8 @@
 ## 0.2.0
 
 - Raise minimum Sidekiq version to 2.6.1 to take advantage of Stats API
+- Inspect scheduled and retry sets to see if they match `specified_queues`
+- Testing: Refactor server middleware tests
 
 ## 0.1.0
 

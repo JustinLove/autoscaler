@@ -58,7 +58,7 @@ Justin Love, [@wondible](http://twitter.com/wondible), [https://github.com/Justi
 
 Ported to Heroku-Api by Fix Peña, [https://github.com/fixr](https://github.com/fixr)
 
-Retry/schedule queues by Matt Anderson [https://github.com/tonkapark](https://github.com/tonkapark)
+Retry/schedule sets by Matt Anderson [https://github.com/tonkapark](https://github.com/tonkapark) and Thibaud Guillaume-Gentil [https://github.com/jilion](https://github.com/jilion)
 
 ## Licence
 
