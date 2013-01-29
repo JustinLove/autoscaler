@@ -26,8 +26,7 @@ describe Autoscaler::Sidekiq do
 
     describe 'scales' do
       before {client.call(Class, {}, 'queue') {}}
-      subject {scaler.workers}
-      it {should == 1}
+      it {scaler.workers.should == 1}
     end
 
     describe 'yields' do
@@ -47,8 +46,7 @@ describe Autoscaler::Sidekiq do
         before do
           server.call(Object.new, {}, 'queue') {}
         end
-        subject {scaler.workers}
-        it {should == 0}
+        it {scaler.workers.should == 0}
       end
 
       context "with scheduled work in another queue" do
@@ -56,8 +54,7 @@ describe Autoscaler::Sidekiq do
           Sidekiq.redis { |c| c.zadd('schedule', (Time.now.to_f + 30.to_f).to_s, payload)}
           server.call(Object.new, {}, 'queue') {}
         end
-        subject {scaler.workers}
-        it {should == 0}
+        it {scaler.workers.should == 0}
       end
 
       context "with retry work in another queue" do
@@ -65,8 +62,7 @@ describe Autoscaler::Sidekiq do
           Sidekiq.redis { |c| c.zadd('retry', (Time.now.to_f + 30.to_f).to_s, payload)}
           server.call(Object.new, {}, 'queue') {}
         end
-        subject {scaler.workers}
-        it {should == 0}
+        it {scaler.workers.should == 0}
       end
     end
 
@@ -81,8 +77,7 @@ describe Autoscaler::Sidekiq do
         before do
           server.call(Object.new, {}, 'queue') {}
         end
-        subject {scaler.workers}
-        it {should == 1}
+        it {scaler.workers.should == 1}
       end
 
       context "with schedule work" do
@@ -90,8 +85,7 @@ describe Autoscaler::Sidekiq do
           Sidekiq.redis { |c| c.zadd('schedule', (Time.now.to_f + 30.to_f).to_s, payload)}
           server.call(Object.new, {}, 'queue') {}
         end
-        subject {scaler.workers}
-        it {should == 1}
+        it {scaler.workers.should == 1}
       end
 
       context "with retry work" do
@@ -99,8 +93,7 @@ describe Autoscaler::Sidekiq do
           Sidekiq.redis { |c| c.zadd('retry', (Time.now.to_f + 30.to_f).to_s, payload)}
           server.call(Object.new, {}, 'queue') {}
         end
-        subject {scaler.workers}
-        it {should == 1}
+        it {scaler.workers.should == 1}
       end
     end
 
