@@ -41,15 +41,18 @@ module Autoscaler
       end
 
       private
-      def all_queues
-        ::Sidekiq::Stats.new.queues
+      def refresh_sidekiq_queues!
+        @sidekiq_queues = ::Sidekiq::Stats.new.queues
+      end
+
+      attr_reader :sidekiq_queues
+
+      def queue_names
+        (@specified_queues || sidekiq_queues.keys)
       end
 
       def queued_work?
-        queues = all_queues
-        (@specified_queues || queues.keys).any? {|name|
-          queues[name] && queues[name] > 0
-        }
+        queue_names.any? {|name| sidekiq_queues[name].to_i > 0 }
       end
 
       def scheduled_work?
@@ -61,12 +64,12 @@ module Autoscaler
       end
 
       def empty_sorted_set?(sorted_set)
-        queues = (@specified_queues || all_queues.keys)
         ss = ::Sidekiq::SortedSet.new(sorted_set)
-        ss.count { |job| queues.include?(job.queue) } > 0
+        ss.any? { |job| queue_names.include?(job.queue) }
       end
 
       def pending_work?
+        refresh_sidekiq_queues!
         queued_work? || scheduled_work? || retry_work?
       end
 

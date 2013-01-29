@@ -73,7 +73,7 @@ describe Autoscaler::Sidekiq do
     describe 'scales' do
       context "with no work" do
         before do
-          server.stub(:all_queues).and_return({'queue' => 0, 'another_queue' => 1})
+          server.stub(:sidekiq_queues).and_return({'queue' => 0, 'another_queue' => 1})
         end
         when_run_should_scale
       end
@@ -96,7 +96,7 @@ describe Autoscaler::Sidekiq do
     describe 'does not scale' do
       context "with enqueued work" do
         before do
-          server.stub(:all_queues).and_return({'queue' => 1})
+          server.stub(:sidekiq_queues).and_return({'queue' => 1})
         end
         when_run_should_not_scale
       end
