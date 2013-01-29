@@ -47,7 +47,9 @@ module Autoscaler
 
       def queued_work?
         queues = all_queues
-        (@specified_queues || queues.keys).any? {|name| queues[name] > 0}
+        (@specified_queues || queues.keys).any? {|name|
+          queues[name] && queues[name] > 0
+        }
       end
 
       def scheduled_work?

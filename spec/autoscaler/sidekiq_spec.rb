@@ -36,64 +36,83 @@ describe Autoscaler::Sidekiq do
 
   describe Autoscaler::Sidekiq::Server do
     let(:cut) {Autoscaler::Sidekiq::Server}
-    let(:server) {cut.new(scaler, 0)}
+    let(:server) {cut.new(scaler, 0, ['queue'])}
     let(:workers) {1}
 
-    describe 'scales' do
-      let(:payload) { Sidekiq.dump_json('queue' => 'another_queue') }
+    def with_work_in_set(queue, set)
+      payload = Sidekiq.dump_json('queue' => queue)
+      Sidekiq.redis { |c| c.zadd(set, (Time.now.to_f + 30.to_f).to_s, payload)}
+    end
 
+    def with_scheduled_work_in(queue)
+      with_work_in_set(queue, 'schedule')
+    end
+
+    def with_retry_work_in(queue)
+      with_work_in_set(queue, 'retry')
+    end
+
+    def when_run
+      server.call(Object.new, {}, 'queue') {}
+    end
+
+    def self.when_run_should_scale
+      it('should downscale') do
+        when_run
+        scaler.workers.should == 0
+      end
+    end
+
+    def self.when_run_should_not_scale
+      it('should not downscale') do
+        when_run
+        scaler.workers.should == 1
+      end
+    end
+
+    describe 'scales' do
       context "with no work" do
         before do
-          server.call(Object.new, {}, 'queue') {}
+          server.stub(:all_queues).and_return({'queue' => 0, 'another_queue' => 1})
         end
-        it {scaler.workers.should == 0}
+        when_run_should_scale
       end
 
       context "with scheduled work in another queue" do
         before do
-          Sidekiq.redis { |c| c.zadd('schedule', (Time.now.to_f + 30.to_f).to_s, payload)}
-          server.call(Object.new, {}, 'queue') {}
+          with_scheduled_work_in('another_queue')
         end
-        it {scaler.workers.should == 0}
+        when_run_should_scale
       end
 
       context "with retry work in another queue" do
         before do
-          Sidekiq.redis { |c| c.zadd('retry', (Time.now.to_f + 30.to_f).to_s, payload)}
-          server.call(Object.new, {}, 'queue') {}
+          with_retry_work_in('another_queue')
         end
-        it {scaler.workers.should == 0}
+        when_run_should_scale
       end
     end
 
     describe 'does not scale' do
-      let(:payload) { Sidekiq.dump_json('queue' => 'queue') }
-
-      before do
-        server.stub(:all_queues).and_return({'queue' => 1})
-      end
-
       context "with enqueued work" do
         before do
-          server.call(Object.new, {}, 'queue') {}
+          server.stub(:all_queues).and_return({'queue' => 1})
         end
-        it {scaler.workers.should == 1}
+        when_run_should_not_scale
       end
 
       context "with schedule work" do
         before do
-          Sidekiq.redis { |c| c.zadd('schedule', (Time.now.to_f + 30.to_f).to_s, payload)}
-          server.call(Object.new, {}, 'queue') {}
+          with_scheduled_work_in('queue')
         end
-        it {scaler.workers.should == 1}
+        when_run_should_not_scale
       end
 
       context "with retry work" do
         before do
-          Sidekiq.redis { |c| c.zadd('retry', (Time.now.to_f + 30.to_f).to_s, payload)}
-          server.call(Object.new, {}, 'queue') {}
+          with_retry_work_in('queue')
         end
-        it {scaler.workers.should == 1}
+        when_run_should_not_scale
       end
     end
 
