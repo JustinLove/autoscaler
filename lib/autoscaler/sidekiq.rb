@@ -51,11 +51,17 @@ module Autoscaler
       end
 
       def scheduled_work?
-        ::Sidekiq::ScheduledSet.new.size > 0
+        empty_sorted_set?("schedule")
       end
 
       def retry_work?
-        ::Sidekiq::RetrySet.new.size > 0
+        empty_sorted_set?("retry")
+      end
+
+      def empty_sorted_set?(sorted_set)
+        queues = (@specified_queues || all_queues.keys)
+        ss = ::Sidekiq::SortedSet.new(sorted_set)
+        ss.count { |job| queues.include?(job.queue) } > 0
       end
 
       def pending_work?

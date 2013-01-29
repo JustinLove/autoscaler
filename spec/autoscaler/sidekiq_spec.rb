@@ -41,8 +41,28 @@ describe Autoscaler::Sidekiq do
     let(:workers) {1}
 
     describe 'scales' do
+      let(:payload) { Sidekiq.dump_json('queue' => 'another_queue') }
+
       context "with no work" do
         before do
+          server.call(Object.new, {}, 'queue') {}
+        end
+        subject {scaler.workers}
+        it {should == 0}
+      end
+
+      context "with scheduled work in another queue" do
+        before do
+          Sidekiq.redis { |c| c.zadd('schedule', (Time.now.to_f + 30.to_f).to_s, payload)}
+          server.call(Object.new, {}, 'queue') {}
+        end
+        subject {scaler.workers}
+        it {should == 0}
+      end
+
+      context "with retry work in another queue" do
+        before do
+          Sidekiq.redis { |c| c.zadd('retry', (Time.now.to_f + 30.to_f).to_s, payload)}
           server.call(Object.new, {}, 'queue') {}
         end
         subject {scaler.workers}
@@ -51,9 +71,14 @@ describe Autoscaler::Sidekiq do
     end
 
     describe 'does not scale' do
+      let(:payload) { Sidekiq.dump_json('queue' => 'queue') }
+
+      before do
+        server.stub(:all_queues).and_return({'queue' => 1})
+      end
+
       context "with enqueued work" do
         before do
-          server.stub(:all_queues).and_return({'queue' => 1})
           server.call(Object.new, {}, 'queue') {}
         end
         subject {scaler.workers}
@@ -62,7 +87,7 @@ describe Autoscaler::Sidekiq do
 
       context "with schedule work" do
         before do
-          server.stub(:scheduled_work?).and_return(true)
+          Sidekiq.redis { |c| c.zadd('schedule', (Time.now.to_f + 30.to_f).to_s, payload)}
           server.call(Object.new, {}, 'queue') {}
         end
         subject {scaler.workers}
@@ -71,7 +96,7 @@ describe Autoscaler::Sidekiq do
 
       context "with retry work" do
         before do
-          server.stub(:retry_work?).and_return(true)
+          Sidekiq.redis { |c| c.zadd('retry', (Time.now.to_f + 30.to_f).to_s, payload)}
           server.call(Object.new, {}, 'queue') {}
         end
         subject {scaler.workers}
