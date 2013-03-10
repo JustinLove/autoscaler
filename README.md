@@ -38,6 +38,7 @@ Install the middleware in your `Sidekiq.configure_` blocks
 - Workers sleep-loop and are not actually returned to the pool; when a job or timeout happen, they can all release at once.
 - If you set job-timeouts on your tasks, they will likely trigger on the sleep-loop (see previous).
 - The retry and schedule lists are considered - if you schedule a long-running task, the process will not scale-down.
+- If background jobs trigger jobs in other scaled processes, please note you'll need `config.client_middleware` in your `Sidekiq.configure_server` block in order to scale-up.
 
 ### Long Jobs
 
