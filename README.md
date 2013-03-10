@@ -19,6 +19,9 @@ This gem uses the [Herkou-Api](https://github.com/heroku/heroku.rb) gem, which r
 
 Install the middleware in your `Sidekiq.configure_` blocks
 
+    require 'autoscaler/sidekiq'
+    require 'autoscaler/heroku_scaler'
+
     Sidekiq.configure_client do |config|
       config.client_middleware do |chain|
         chain.add Autoscaler::Sidekiq::Client, 'default' => Autoscaler::HerokuScaler.new
