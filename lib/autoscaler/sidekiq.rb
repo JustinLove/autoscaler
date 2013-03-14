@@ -33,10 +33,10 @@ module Autoscaler
 
       # Sidekiq middleware api entry point
       def call(worker, msg, queue)
-        working!
+        working!(queue)
         yield
       ensure
-        working!
+        working!(queue)
         wait_for_task_or_scale
       end
 
@@ -81,20 +81,33 @@ module Autoscaler
         end
       end
 
-      def working!
-        ::Sidekiq.redis {|c| c.set('background_activity', Time.now)}
+      def working!(queue)
+        active_at queue, Time.now
+      end
+
+      # test support
+      def idle!(queue)
+        active_at queue, Time.now - @timeout*2
       end
 
       def idle_time
-        ::Sidekiq.redis {|c|
-          t = c.get('background_activity')
-          return 0 unless t
-          Time.now - Time.parse(t)
-        }
+        t = last_activity
+        return 0 unless t
+        Time.now - Time.parse(t)
       end
 
       def idle?
         idle_time > @timeout
+      end
+
+      def last_activity
+        ::Sidekiq.redis {|c|
+          queue_names.map {|q| c.get('background_activity:'+q)}.compact.max
+        }
+      end
+
+      def active_at(queue, time)
+        ::Sidekiq.redis {|c| c.set('background_activity:'+queue, time)}
       end
     end
   end

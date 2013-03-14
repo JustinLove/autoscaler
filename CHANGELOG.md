@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Separate background activity flags to avoid crosstalk between processes
+
 ## 0.2.0
 
 - Raise minimum Sidekiq version to 2.6.1 to take advantage of Stats API
@@ -17,6 +21,6 @@
 
 ## 0.0.2
 
-- Loosen Sidekiq version dependecy
+- Loosen Sidekiq version dependency
 - Add changelog
 - Add changelog, readme, and examples to gem files list

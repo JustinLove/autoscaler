@@ -9,6 +9,11 @@ class Scaler
   end
 end
 
+class Autoscaler::Sidekiq::Server
+  public :idle!
+  public :working!
+end
+
 describe Autoscaler::Sidekiq do
   before do
     @redis = Sidekiq.redis = REDIS
@@ -90,6 +95,15 @@ describe Autoscaler::Sidekiq do
           with_retry_work_in('another_queue')
         end
         when_run_should_scale
+      end
+
+      context "when another process is working" do
+        let(:other_process) {cut.new(Scaler.new(0), 10, ['other_queue'])}
+        before do
+          other_process.idle!('other_queue')
+          server.working!('queue')
+        end
+        it {other_process.should be_idle}
       end
     end
 
