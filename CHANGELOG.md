@@ -1,9 +1,10 @@
 # Changelog
 
+- Autoscaler::StubScaler may be used for local testing
+
 ## 0.2.1
 
 - Separate background activity flags to avoid crosstalk between processes
-- Autoscaler::StubScaler may be used for local testing
 
 ## 0.2.0
 
