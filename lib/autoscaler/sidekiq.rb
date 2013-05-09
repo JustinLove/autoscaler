@@ -1,3 +1,4 @@
+require 'autoscaler/sidekiq/queue_system'
 require 'sidekiq'
 
 module Autoscaler
@@ -28,7 +29,7 @@ module Autoscaler
       def initialize(scaler, timeout, specified_queues = nil)
         @scaler = scaler
         @timeout = timeout
-        @specified_queues = specified_queues
+        @system = QueueSystem.new(specified_queues)
       end
 
       # Sidekiq middleware api entry point
@@ -41,36 +42,10 @@ module Autoscaler
       end
 
       private
-      def refresh_sidekiq_queues!
-        @sidekiq_queues = ::Sidekiq::Stats.new.queues
-      end
-
-      attr_reader :sidekiq_queues
-
-      def queue_names
-        (@specified_queues || sidekiq_queues.keys)
-      end
-
-      def queued_work?
-        queue_names.any? {|name| sidekiq_queues[name].to_i > 0 }
-      end
-
-      def scheduled_work?
-        empty_sorted_set?("schedule")
-      end
-
-      def retry_work?
-        empty_sorted_set?("retry")
-      end
-
-      def empty_sorted_set?(sorted_set)
-        ss = ::Sidekiq::SortedSet.new(sorted_set)
-        ss.any? { |job| queue_names.include?(job.queue) }
-      end
+      attr_reader :system
 
       def pending_work?
-        refresh_sidekiq_queues!
-        queued_work? || scheduled_work? || retry_work?
+        system.pending_work?
       end
 
       def wait_for_task_or_scale
@@ -102,7 +77,7 @@ module Autoscaler
 
       def last_activity
         ::Sidekiq.redis {|c|
-          queue_names.map {|q| c.get('background_activity:'+q)}.compact.max
+          system.queue_names.map {|q| c.get('background_activity:'+q)}.compact.max
         }
       end
 

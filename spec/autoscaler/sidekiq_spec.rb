@@ -44,90 +44,29 @@ describe Autoscaler::Sidekiq do
     let(:server) {cut.new(scaler, 0, ['queue'])}
     let(:workers) {1}
 
-    def with_work_in_set(queue, set)
-      payload = Sidekiq.dump_json('queue' => queue)
-      Sidekiq.redis { |c| c.zadd(set, (Time.now.to_f + 30.to_f).to_s, payload)}
-    end
-
-    def with_scheduled_work_in(queue)
-      with_work_in_set(queue, 'schedule')
-    end
-
-    def with_retry_work_in(queue)
-      with_work_in_set(queue, 'retry')
-    end
-
     def when_run
       server.call(Object.new, {}, 'queue') {}
     end
 
-    def self.when_run_should_scale
-      it('should downscale') do
-        when_run
-        scaler.workers.should == 0
-      end
+    it "scales with no work" do
+      server.stub(:pending_work?).and_return(false)
+      when_run
+      scaler.workers.should == 0
     end
 
-    def self.when_run_should_not_scale
-      it('should not downscale') do
-        when_run
-        scaler.workers.should == 1
-      end
+    it "does not scale with pending work" do
+      server.stub(:pending_work?).and_return(true)
+      when_run
+      scaler.workers.should == 1
     end
 
-    describe 'scales' do
-      context "with no work" do
-        before do
-          server.stub(:sidekiq_queues).and_return({'queue' => 0, 'another_queue' => 1})
-        end
-        when_run_should_scale
+    context "when another process is working" do
+      let(:other_process) {cut.new(Scaler.new(0), 10, ['other_queue'])}
+      before do
+        other_process.idle!('other_queue')
+        server.working!('queue')
       end
-
-      context "with scheduled work in another queue" do
-        before do
-          with_scheduled_work_in('another_queue')
-        end
-        when_run_should_scale
-      end
-
-      context "with retry work in another queue" do
-        before do
-          with_retry_work_in('another_queue')
-        end
-        when_run_should_scale
-      end
-
-      context "when another process is working" do
-        let(:other_process) {cut.new(Scaler.new(0), 10, ['other_queue'])}
-        before do
-          other_process.idle!('other_queue')
-          server.working!('queue')
-        end
-        it {other_process.should be_idle}
-      end
-    end
-
-    describe 'does not scale' do
-      context "with enqueued work" do
-        before do
-          server.stub(:sidekiq_queues).and_return({'queue' => 1})
-        end
-        when_run_should_not_scale
-      end
-
-      context "with schedule work" do
-        before do
-          with_scheduled_work_in('queue')
-        end
-        when_run_should_not_scale
-      end
-
-      context "with retry work" do
-        before do
-          with_retry_work_in('queue')
-        end
-        when_run_should_not_scale
-      end
+      it {other_process.should be_idle}
     end
 
     describe 'yields' do
