@@ -11,27 +11,40 @@ module Autoscaler
       # @param [System] system interface to the queuing system that provides `pending_work?`
       def initialize(scaler, timeout, system)
         @scaler = scaler
-        @poll = [timeout/4.0, 0.5].min
+        @timeout = timeout
+        @poll = [timeout/4.0, 0.5].max
         @system = system
       end
 
       # Mostly sleep until there has been no activity for the timeout
       def wait_for_downscale
-        while pending_work? || working?
+        active_now!
+
+        while active? || time_left?
           sleep(@poll)
+          update_activity
         end
+
         @scaler.workers = 0
       end
 
       private
       attr_reader :system
 
-      def pending_work?
-        system.pending_work?
+      def active?
+        system.pending_work? || system.working?
       end
 
-      def working?
-        system.working?
+      def update_activity
+        active_now! if active?
+      end
+
+      def active_now!
+        @activity = Time.now
+      end
+
+      def time_left?
+        (Time.now - @activity) < @timeout
       end
     end
   end
