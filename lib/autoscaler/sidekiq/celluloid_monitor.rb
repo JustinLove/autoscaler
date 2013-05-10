@@ -1,4 +1,3 @@
-require 'autoscaler/sidekiq/queue_system'
 require 'autoscaler/sidekiq/activity'
 require 'celluloid'
 
@@ -10,17 +9,17 @@ module Autoscaler
 
       # @param [scaler] scaler object that actually performs scaling operations (e.g. {HerokuScaler})
       # @param [Numeric] timeout number of seconds to wait before shutdown
-      # @param [Array[String]] specified_queues list of queues to monitor to determine if there is work left.  Defaults to all sidekiq queues.
-      def initialize(scaler, timeout, specified_queues = nil)
+      # @param [System] system interface to the queuing system that provides `pending_work?`
+      def initialize(scaler, timeout, system)
         @scaler = scaler
         @poll = [timeout/4.0, 0.5].min
         @activity = Activity.new(timeout)
-        @system = QueueSystem.new(specified_queues)
-        @activity.working!(@system.queue_names.first)
+        @system = system
       end
 
-      # Mostly sleep until
+      # Mostly sleep until there has been no activity for the timeout
       def wait_for_downscale
+        working!
         while pending_work? || working?
           sleep(@poll)
         end
@@ -37,6 +36,10 @@ module Autoscaler
 
       def working?
         !activity.idle?(system.queue_names)
+      end
+
+      def working!
+        activity.working!(system.queue_names.first)
       end
     end
   end
