@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0
+
+- Downscale method changed from busy-waiting workers to a separate monitor process
+- Minimum Sidekiq version raised to 2.7 to take advantage of Worker API
+- Internal refactoring
 - Autoscaler::StubScaler may be used for local testing
 
 ## 0.2.1

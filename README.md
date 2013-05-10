@@ -34,15 +34,8 @@ Install the middleware in your `Sidekiq.configure_` blocks
 ## Limits and Challenges
 
 - HerokuScaler includes an attempt at current-worker cache that may be overcomplication, and doesn't work very well (see next)
-- Multiple threads often send scaling requests at once.  Heroku seems to handle this well.
-- Workers sleep-loop and are not actually returned to the pool; when a job or timeout happen, they can all release at once.
-- If you set job-timeouts on your tasks, they will likely trigger on the sleep-loop (see previous).
 - The retry and schedule lists are considered - if you schedule a long-running task, the process will not scale-down.
 - If background jobs trigger jobs in other scaled processes, please note you'll need `config.client_middleware` in your `Sidekiq.configure_server` block in order to scale-up.
-
-### Long Jobs
-
-Since the shutdown check gets performed every time a job completes, the shutdown-timeout will need to be longer than the longest job.  For mixed workloads, you might want to have multiple sidekiq processes defined.  I use one with many workers for general work, and a single-worker process for long import jobs.  See `examples/complex.rb`
 
 ## Tests
 
