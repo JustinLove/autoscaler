@@ -12,7 +12,7 @@ describe Autoscaler::Sidekiq::CelluloidMonitor do
   let(:scaler) {TestScaler.new(1)}
   let(:system) {
     stub('system').tap do |s|
-      s.stub(:queue_names).and_return(['queues'])
+      s.stub(:working?).and_return(false)
     end
   }
   let(:manager) {cut.new(scaler, 0, system)}

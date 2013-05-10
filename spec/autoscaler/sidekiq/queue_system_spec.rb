@@ -25,6 +25,7 @@ describe Autoscaler::Sidekiq::QueueSystem do
   subject {cut.new(['queue'])}
 
   it {subject.queue_names.should == ['queue']}
+  it {subject.working?.should be_false}
 
   describe 'no pending work' do
     it "with no work" do

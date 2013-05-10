@@ -1,4 +1,4 @@
-require 'sidekiq'
+require 'sidekiq/api'
 
 module Autoscaler
   module Sidekiq
@@ -13,6 +13,11 @@ module Autoscaler
       def pending_work?
         refresh_sidekiq_queues!
         queued_work? || scheduled_work? || retry_work?
+      end
+
+      # @return [boolean] whether there are workers actively running
+      def working?
+        workers > 0
       end
 
       # @return [Array[String]]
@@ -42,6 +47,25 @@ module Autoscaler
       def empty_sorted_set?(sorted_set)
         ss = ::Sidekiq::SortedSet.new(sorted_set)
         ss.any? { |job| queue_names.include?(job.queue) }
+      end
+
+      def workers
+        if @specified_queues
+          specified_workers
+        else
+          total_workers
+        end
+      end
+
+      def total_workers
+        ::Sidekiq::Workers.new.size
+      end
+
+      def specified_workers
+        refresh_sidekiq_queues!
+        ::Sidekiq::Workers.new.count {|name, work|
+          queue_names.include?(work['queue'])
+        }
       end
     end
   end
