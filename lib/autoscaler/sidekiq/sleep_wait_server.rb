@@ -5,7 +5,7 @@ module Autoscaler
   module Sidekiq
     # Sidekiq server middleware
     # Performs scale-down when the queue is empty
-    class Server
+    class SleepWaitServer
       # @param [scaler] scaler object that actually performs scaling operations (e.g. {HerokuScaler})
       # @param [Numeric] timeout number of seconds to wait before shutdown
       # @param [Array[String]] specified_queues list of queues to monitor to determine if there is work left.  Defaults to all sidekiq queues.

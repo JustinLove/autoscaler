@@ -1,13 +1,13 @@
 require 'spec_helper'
-require 'autoscaler/sidekiq/server'
+require 'autoscaler/sidekiq/sleep_wait_server'
 
-describe Autoscaler::Sidekiq::Server do
+describe Autoscaler::Sidekiq::SleepWaitServer do
   before do
     @redis = Sidekiq.redis = REDIS
     Sidekiq.redis {|c| c.flushdb }
   end
 
-  let(:cut) {Autoscaler::Sidekiq::Server}
+  let(:cut) {Autoscaler::Sidekiq::SleepWaitServer}
   let(:scaler) {TestScaler.new(1)}
   let(:server) {cut.new(scaler, 0, ['queue'])}
 
