@@ -10,7 +10,7 @@ module Autoscaler
       # @param [Array[String]] specified_queues list of queues to monitor to determine if there is work left.  Defaults to all sidekiq queues.
       def initialize(scaler, timeout, specified_queues = nil)
         system = QueueSystem.new(specified_queues)
-        CelluloidMonitor.supervise(scaler, timeout, system)
+        CelluloidMonitor.start!(scaler, timeout, system)
       end
 
       # Sidekiq middleware api entry point - noop

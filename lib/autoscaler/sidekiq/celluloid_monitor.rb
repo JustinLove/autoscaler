@@ -6,6 +6,12 @@ module Autoscaler
     class CelluloidMonitor
       include Celluloid
 
+      def self.start!(*args)
+        unless Celluloid::Actor[:autoscaler_monitor]
+          supervise_as(:autoscaler_monitor, *args).actors.first.async.wait_for_downscale
+        end
+      end
+
       # @param [scaler] scaler object that actually performs scaling operations (e.g. {HerokuScaler})
       # @param [Numeric] timeout number of seconds to wait before shutdown
       # @param [System] system interface to the queuing system that provides `pending_work?`
