@@ -6,12 +6,6 @@ module Autoscaler
     class CelluloidMonitor
       include Celluloid
 
-      def self.start!(*args)
-        unless Celluloid::Actor[:autoscaler_monitor]
-          supervise_as(:autoscaler_monitor, *args).actors.first.async.wait_for_downscale
-        end
-      end
-
       # @param [scaler] scaler object that actually performs scaling operations (e.g. {HerokuScaler})
       # @param [Numeric] timeout number of seconds to wait before shutdown
       # @param [System] system interface to the queuing system that provides `pending_work?`
@@ -20,18 +14,29 @@ module Autoscaler
         @timeout = timeout
         @poll = [timeout/4.0, 0.5].max
         @system = system
+        @running = false
       end
 
       # Mostly sleep until there has been no activity for the timeout
       def wait_for_downscale
-        active_now!
+        once do
+          active_now!
 
-        while active? || time_left?
-          sleep(@poll)
-          update_activity
+          while active? || time_left?
+            sleep(@poll)
+            update_activity
+          end
+
+          @scaler.workers = 0
         end
+      end
 
-        @scaler.workers = 0
+      def starting_job
+      end
+
+      def finished_job
+        active_now!
+        async.wait_for_downscale
       end
 
       private
@@ -51,6 +56,17 @@ module Autoscaler
 
       def time_left?
         (Time.now - @activity) < @timeout
+      end
+
+      def once
+        return if @running
+
+        begin
+          @running = true
+          yield
+        ensure
+          @running = false
+        end
       end
     end
   end
