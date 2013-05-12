@@ -31,9 +31,11 @@ module Autoscaler
         end
       end
 
+      # Notify the monitor that a job is starting
       def starting_job
       end
 
+      # Notify the monitor that a job has finished
       def finished_job
         active_now!
         async.wait_for_downscale

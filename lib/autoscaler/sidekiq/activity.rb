@@ -5,7 +5,6 @@ module Autoscaler
     # Tracks activity timeouts using Sidekiq's redis connection
     class Activity
       # @param [Numeric] timeout number of seconds to wait before shutdown
-      # @param [Array[String]] specified_queues list of queues to monitor to determine if there is work left.  Defaults to all sidekiq queues.
       def initialize(timeout)
         @timeout = timeout
       end
