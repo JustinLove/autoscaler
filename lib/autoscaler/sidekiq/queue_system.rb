@@ -1,71 +1,19 @@
 require 'sidekiq/api'
+require 'autoscaler/sidekiq/specified_queue_system'
+require 'autoscaler/sidekiq/entire_queue_system'
 
 module Autoscaler
   module Sidekiq
     # Interface to to interrogate the queuing system
-    class QueueSystem
+    # convenience constructor for SpecifiedQueueSystem and EntireQueueSystem
+    module QueueSystem
       # @param [Array[String]] specified_queues list of queues to monitor to determine if there is work left.  Defaults to all sidekiq queues.
-      def initialize(specified_queues = nil)
-        @specified_queues = specified_queues
-      end
-
-      # @return [boolean] whether there is queued work - does not include work currently in progress
-      def pending_work?
-        refresh_sidekiq_queues!
-        queued_work? || scheduled_work? || retry_work?
-      end
-
-      # @return [boolean] whether there are workers actively running
-      def working?
-        workers > 0
-      end
-
-      # @return [Array[String]]
-      def queue_names
-        (@specified_queues || sidekiq_queues.keys)
-      end
-
-      private
-      def queued_work?
-        queue_names.any? {|name| sidekiq_queues[name].to_i > 0 }
-      end
-
-      def scheduled_work?
-        empty_sorted_set?("schedule")
-      end
-
-      def retry_work?
-        empty_sorted_set?("retry")
-      end
-
-      attr_reader :sidekiq_queues
-
-      def refresh_sidekiq_queues!
-        @sidekiq_queues = ::Sidekiq::Stats.new.queues
-      end
-
-      def empty_sorted_set?(sorted_set)
-        ss = ::Sidekiq::SortedSet.new(sorted_set)
-        ss.any? { |job| queue_names.include?(job.queue) }
-      end
-
-      def workers
-        if @specified_queues
-          specified_workers
+      def self.new(specified_queues = nil)
+        if specified_queues
+          SpecifiedQueueSystem.new(specified_queues)
         else
-          total_workers
+          EntireQueueSystem.new
         end
-      end
-
-      def total_workers
-        ::Sidekiq::Workers.new.size
-      end
-
-      def specified_workers
-        refresh_sidekiq_queues!
-        ::Sidekiq::Workers.new.count {|name, work|
-          queue_names.include?(work['queue'])
-        }
       end
     end
   end

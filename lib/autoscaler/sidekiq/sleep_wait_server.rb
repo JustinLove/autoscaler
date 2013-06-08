@@ -37,7 +37,7 @@ module Autoscaler
       attr_reader :activity
 
       def pending_work?
-        system.pending_work?
+        system.pending > 0
       end
 
       def working!(queue)

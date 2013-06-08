@@ -1,8 +1,8 @@
 require 'spec_helper'
-require 'autoscaler/sidekiq/queue_system'
+require 'autoscaler/sidekiq/specified_queue_system'
 
-describe Autoscaler::Sidekiq::QueueSystem do
-  let(:cut) {Autoscaler::Sidekiq::QueueSystem}
+describe Autoscaler::Sidekiq::SpecifiedQueueSystem do
+  let(:cut) {Autoscaler::Sidekiq::SpecifiedQueueSystem}
 
   before do
     @redis = Sidekiq.redis = REDIS
@@ -25,39 +25,39 @@ describe Autoscaler::Sidekiq::QueueSystem do
   subject {cut.new(['queue'])}
 
   it {subject.queue_names.should == ['queue']}
-  it {subject.working?.should be_false}
+  it {subject.workers.should == 0}
 
   describe 'no pending work' do
     it "with no work" do
       subject.stub(:sidekiq_queues).and_return({'queue' => 0, 'another_queue' => 1})
-      subject.should_not be_pending_work
+      subject.queued.should == 0
     end
 
     it "with scheduled work in another queue" do
       with_scheduled_work_in('another_queue')
-      subject.should_not be_pending_work
+      subject.scheduled.should == 0
     end
 
     it "with retry work in another queue" do
       with_retry_work_in('another_queue')
-      subject.should_not be_pending_work
+      subject.retrying.should == 0
     end
   end
 
   describe 'with pending work' do
     it "with enqueued work" do
       subject.stub(:sidekiq_queues).and_return({'queue' => 1})
-      subject.should be_pending_work
+      subject.queued.should == 1
     end
 
     it "with schedule work" do
       with_scheduled_work_in('queue')
-      subject.should be_pending_work
+      subject.scheduled.should == 1
     end
 
     it "with retry work" do
       with_retry_work_in('queue')
-      subject.should be_pending_work
+      subject.retrying.should == 1
     end
   end
 end

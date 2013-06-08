@@ -7,8 +7,8 @@ class TestSystem
     @pending = pending
   end
 
-  def working?; false; end
-  def pending_work?; @pending; end
+  def workers; 0; end
+  def pending; @pending; end
 end
 
 describe Autoscaler::Sidekiq::CelluloidMonitor do
@@ -21,7 +21,7 @@ describe Autoscaler::Sidekiq::CelluloidMonitor do
   let(:scaler) {TestScaler.new(1)}
 
   it "scales with no work" do
-    system = TestSystem.new(false)
+    system = TestSystem.new(0)
     manager = cut.new(scaler, 0, system)
     Timeout.timeout(1) { manager.wait_for_downscale }
     scaler.workers.should == 0
@@ -29,7 +29,7 @@ describe Autoscaler::Sidekiq::CelluloidMonitor do
   end
 
   it "does not scale with pending work" do
-    system = TestSystem.new(true)
+    system = TestSystem.new(1)
     manager = cut.new(scaler, 0, system)
     expect {Timeout.timeout(1) { manager.wait_for_downscale }}.to raise_error Timeout::Error
     scaler.workers.should == 1
