@@ -10,6 +10,13 @@ module Autoscaler
         @queue_names = specified_queues
       end
 
+      # @return [Integer] number of worker actively engaged
+      def workers
+        ::Sidekiq::Workers.new.count {|name, work|
+          queue_names.include?(work['queue'])
+        }
+      end
+
       # @return [Integer] amount work ready to go
       def queued
         queue_names.map {|name| sidekiq_queues[name].to_i}.reduce(&:+)
@@ -23,13 +30,6 @@ module Autoscaler
       # @return [Integer] amount of work still being retried
       def retrying
         count_sorted_set("retry")
-      end
-
-      # @return [Integer] number of worker actively engaged
-      def workers
-        ::Sidekiq::Workers.new.count {|name, work|
-          queue_names.include?(work['queue'])
-        }
       end
 
       # @return [Array[String]]

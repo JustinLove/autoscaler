@@ -5,6 +5,11 @@ module Autoscaler
     # Interface to to interrogate the queuing system
     # Includes every queue
     class EntireQueueSystem
+      # @return [Integer] number of worker actively engaged
+      def workers
+        ::Sidekiq::Workers.new.size
+      end
+
       # @return [Integer] amount work ready to go
       def queued
         sidekiq_queues.values.map(&:to_i).reduce(&:+)
@@ -18,11 +23,6 @@ module Autoscaler
       # @return [Integer] amount of work still being retried
       def retrying
         count_sorted_set("retry")
-      end
-
-      # @return [Integer] number of worker actively engaged
-      def workers
-        ::Sidekiq::Workers.new.size
       end
 
       # @return [Array[String]]
