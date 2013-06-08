@@ -45,7 +45,7 @@ module Autoscaler
       attr_reader :system
 
       def active?
-        system.pending > 0 || system.workers > 0
+        system.queued > 0 || system.scheduled > 0 || system.retrying > 0 || system.workers > 0
       end
 
       def update_activity

@@ -5,11 +5,6 @@ module Autoscaler
     # Interface to to interrogate the queuing system
     # Includes every queue
     class EntireQueueSystem
-      # @return [Integer] total work - does not include work currently in progress
-      def pending
-        queued + scheduled + retrying
-      end
-
       # @return [Integer] amount work ready to go
       def queued
         sidekiq_queues.values.map(&:to_i).reduce(&:+)

@@ -10,11 +10,6 @@ module Autoscaler
         @queue_names = specified_queues
       end
 
-      # @return [Integer] total work - does not include work currently in progress
-      def pending
-        queued + scheduled + retrying
-      end
-
       # @return [Integer] amount work ready to go
       def queued
         queue_names.map {|name| sidekiq_queues[name].to_i}.reduce(&:+)

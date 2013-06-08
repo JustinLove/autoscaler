@@ -27,7 +27,7 @@ describe Autoscaler::Sidekiq::SpecifiedQueueSystem do
   it {subject.queue_names.should == ['queue']}
   it {subject.workers.should == 0}
 
-  describe 'no pending work' do
+  describe 'no queued work' do
     it "with no work" do
       subject.stub(:sidekiq_queues).and_return({'queue' => 0, 'another_queue' => 1})
       subject.queued.should == 0
@@ -44,7 +44,7 @@ describe Autoscaler::Sidekiq::SpecifiedQueueSystem do
     end
   end
 
-  describe 'with pending work' do
+  describe 'with queued work' do
     it "with enqueued work" do
       subject.stub(:sidekiq_queues).and_return({'queue' => 1})
       subject.queued.should == 1
