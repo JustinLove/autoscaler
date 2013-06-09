@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+
+- Experimental: The default scaling logic is contained in ZeroOneScalingStrategy.  A strategy object can be passed instead of timeout to the server middleware.
+
 ## 0.3.0
 
 - Downscale method changed from busy-waiting workers to a separate monitor process

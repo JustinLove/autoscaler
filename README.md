@@ -42,6 +42,10 @@ Install the middleware in your `Sidekiq.configure_` blocks
 - The retry and schedule lists are considered - if you schedule a long-running task, the process will not scale-down.
 - If background jobs trigger jobs in other scaled processes, please note you'll need `config.client_middleware` in your `Sidekiq.configure_server` block in order to scale-up.
 
+## Experimental
+
+You can pass a scaling strategy object instead of the timeout to the server middleware.  The object (or lambda) should respond to `#call(system, idle_time)` and return the desired number of workers.  See `lib/autoscaler/zero_one_scaling_strategy.rb` for an example.
+
 ## Tests
 
 The project is setup to run RSpec with Guard.  It expects a redis instance on a custom port, which is started by the Guardfile.
