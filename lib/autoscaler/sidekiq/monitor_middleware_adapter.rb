@@ -1,6 +1,7 @@
 require 'autoscaler/sidekiq/queue_system'
 require 'autoscaler/sidekiq/celluloid_monitor'
 require 'autoscaler/zero_one_scaling_strategy'
+require 'autoscaler/delayed_shutdown'
 
 module Autoscaler
   module Sidekiq
@@ -8,7 +9,7 @@ module Autoscaler
     # Starts the monitor and notifies it of job events that may occur while it's sleeping
     class MonitorMiddlewareAdapter
       # @param [scaler] scaler object that actually performs scaling operations (e.g. {HerokuScaler})
-      # @param [Strategy,Numeric] timeout strategy object that determines target workers, or a timeout to be passed to {ZeroOneScalingStrategy}
+      # @param [Strategy,Numeric] timeout strategy object that determines target workers, or a timeout to be passed to {DelayedShutdown}+{ZeroOneScalingStrategy}
       # @param [Array[String]] specified_queues list of queues to monitor to determine if there is work left.  Defaults to all sidekiq queues.
       def initialize(scaler, timeout, specified_queues = nil)
         unless monitor
@@ -36,7 +37,7 @@ module Autoscaler
         if timeout.respond_to?(:call)
           timeout
         else
-          ZeroOneScalingStrategy.new(timeout)
+          DelayedShutdown.new(ZeroOneScalingStrategy.new, timeout)
         end
       end
     end
