@@ -14,16 +14,16 @@ describe Autoscaler::Sidekiq::CelluloidMonitor do
 
   it "scales with no work" do
     system = TestSystem.new(0)
-    manager = cut.new(scaler, 0, system)
-    Timeout.timeout(1) { manager.wait_for_downscale }
+    manager = cut.new(scaler, lambda{|s,t| 0}, system)
+    Timeout.timeout(1) { manager.wait_for_downscale(0.5) }
     scaler.workers.should == 0
     manager.terminate
   end
 
   it "does not scale with pending work" do
     system = TestSystem.new(1)
-    manager = cut.new(scaler, 0, system)
-    expect {Timeout.timeout(1) { manager.wait_for_downscale }}.to raise_error Timeout::Error
+    manager = cut.new(scaler, lambda{|s,t| 1}, system)
+    expect {Timeout.timeout(1) { manager.wait_for_downscale(0.5) }}.to raise_error Timeout::Error
     scaler.workers.should == 1
     manager.terminate
   end

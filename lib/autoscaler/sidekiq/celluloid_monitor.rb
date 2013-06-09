@@ -7,27 +7,28 @@ module Autoscaler
       include Celluloid
 
       # @param [scaler] scaler object that actually performs scaling operations (e.g. {HerokuScaler})
-      # @param [Numeric] timeout number of seconds to wait before shutdown
-      # @param [System] system interface to the queuing system that provides `pending_work?`
-      def initialize(scaler, timeout, system)
+      # @param [Strategy] strategy object that decides the target number of workers (e.g. {ZeroOneScalingStrategy})
+      # @param [System] system interface to the queuing system for use by the strategy
+      def initialize(scaler, strategy, system)
         @scaler = scaler
-        @timeout = timeout
-        @poll = [timeout/4.0, 0.5].max
+        @strategy = strategy
         @system = system
         @running = false
       end
 
-      # Mostly sleep until there has been no activity for the timeout
-      def wait_for_downscale
+      # Periodically update the desired number of workers
+      # @param [Numeric] interval polling interval, mostly for testing
+      def wait_for_downscale(interval = 15)
         once do
           active_now!
 
-          while active? || time_left?
-            sleep(@poll)
-            update_activity
-          end
+          workers = @scaler.workers
 
-          @scaler.workers = 0
+          begin
+            sleep(interval)
+            target_workers = @strategy.call(@system, idle_time)
+            workers = @scaler.workers = target_workers unless workers == target_workers
+          end while workers > 0
         end
       end
 
@@ -42,22 +43,13 @@ module Autoscaler
       end
 
       private
-      attr_reader :system
-
-      def active?
-        system.queued > 0 || system.scheduled > 0 || system.retrying > 0 || system.workers > 0
-      end
-
-      def update_activity
-        active_now! if active?
-      end
 
       def active_now!
         @activity = Time.now
       end
 
-      def time_left?
-        (Time.now - @activity) < @timeout
+      def idle_time
+        Time.now - @activity
       end
 
       def once
