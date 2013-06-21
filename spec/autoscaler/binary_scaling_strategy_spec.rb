@@ -13,7 +13,7 @@ describe Autoscaler::BinaryScalingStrategy do
 
   it "does not scale with pending work" do
     system = TestSystem.new(1)
-    strategy = cut.new
-    strategy.call(system, 1).should == 1
+    strategy = cut.new(2)
+    strategy.call(system, 1).should == 2
   end
 end
