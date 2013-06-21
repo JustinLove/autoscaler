@@ -44,7 +44,7 @@ Install the middleware in your `Sidekiq.configure_` blocks
 
 ## Experimental
 
-You can pass a scaling strategy object instead of the timeout to the server middleware.  The object (or lambda) should respond to `#call(system, idle_time)` and return the desired number of workers.  See `lib/autoscaler/zero_one_scaling_strategy.rb` for an example.
+You can pass a scaling strategy object instead of the timeout to the server middleware.  The object (or lambda) should respond to `#call(system, idle_time)` and return the desired number of workers.  See `lib/autoscaler/binary_scaling_strategy.rb` for an example.
 
 ## Tests
 

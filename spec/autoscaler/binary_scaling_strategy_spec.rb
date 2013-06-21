@@ -1,9 +1,9 @@
 require 'spec_helper'
 require 'test_system'
-require 'autoscaler/zero_one_scaling_strategy'
+require 'autoscaler/binary_scaling_strategy'
 
-describe Autoscaler::ZeroOneScalingStrategy do
-  let(:cut) {Autoscaler::ZeroOneScalingStrategy}
+describe Autoscaler::BinaryScalingStrategy do
+  let(:cut) {Autoscaler::BinaryScalingStrategy}
 
   it "scales with no work" do
     system = TestSystem.new(0)

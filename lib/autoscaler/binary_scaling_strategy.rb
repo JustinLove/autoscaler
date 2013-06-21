@@ -1,7 +1,7 @@
 module Autoscaler
   # Strategies determine the target number of workers
   # The default strategy has a single worker when there is anything, or shuts it down.
-  class ZeroOneScalingStrategy
+  class BinaryScalingStrategy
     # @param [QueueSystem] system interface to the queuing system
     # @param [Numeric] event_idle_time number of seconds since a job related event
     # @return [Integer] target number of workers

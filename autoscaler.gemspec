@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = "autoscaler"
 
   s.files         = <<MANIFEST.split("\n")
+lib/autoscaler/binary_scaling_strategy.rb
 lib/autoscaler/heroku_scaler.rb
 lib/autoscaler/sidekiq/activity.rb
 lib/autoscaler/sidekiq/celluloid_monitor.rb
@@ -26,7 +27,6 @@ lib/autoscaler/sidekiq/specified_queue_system.rb
 lib/autoscaler/sidekiq.rb
 lib/autoscaler/stub_scaler.rb
 lib/autoscaler/version.rb
-lib/autoscaler/zero_one_scaling_strategy.rb
 lib/autoscaler.rb
 README.md
 CHANGELOG.md
@@ -35,6 +35,7 @@ examples/simple.rb
 MANIFEST
   s.test_files    = <<TEST_MANIFEST.split("\n")
 Guardfile
+spec/autoscaler/binary_scaling_strategy_spec.rb
 spec/autoscaler/heroku_scaler_spec.rb
 spec/autoscaler/sidekiq/activity_spec.rb
 spec/autoscaler/sidekiq/celluloid_monitor_spec.rb
@@ -43,7 +44,6 @@ spec/autoscaler/sidekiq/entire_queue_system_spec.rb
 spec/autoscaler/sidekiq/monitor_middleware_adapter_spec.rb
 spec/autoscaler/sidekiq/sleep_wait_server_spec.rb
 spec/autoscaler/sidekiq/specified_queue_system_spec.rb
-spec/autoscaler/zero_one_scaling_strategy_spec.rb
 spec/redis_test.conf
 spec/spec_helper.rb
 spec/test_system.rb
