@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
 
   s.files         = <<MANIFEST.split("\n")
 lib/autoscaler/binary_scaling_strategy.rb
+lib/autoscaler/delayed_shutdown.rb
 lib/autoscaler/heroku_scaler.rb
 lib/autoscaler/sidekiq/activity.rb
 lib/autoscaler/sidekiq/celluloid_monitor.rb
@@ -36,6 +37,7 @@ MANIFEST
   s.test_files    = <<TEST_MANIFEST.split("\n")
 Guardfile
 spec/autoscaler/binary_scaling_strategy_spec.rb
+spec/autoscaler/delayed_shutdown_spec.rb
 spec/autoscaler/heroku_scaler_spec.rb
 spec/autoscaler/sidekiq/activity_spec.rb
 spec/autoscaler/sidekiq/celluloid_monitor_spec.rb

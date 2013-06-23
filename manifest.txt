@@ -7,6 +7,7 @@ Gemfile
 Gemfile.lock
 Guardfile
 lib/autoscaler/binary_scaling_strategy.rb
+lib/autoscaler/delayed_shutdown.rb
 lib/autoscaler/heroku_scaler.rb
 lib/autoscaler/sidekiq/activity.rb
 lib/autoscaler/sidekiq/celluloid_monitor.rb
@@ -27,9 +28,11 @@ pkg/autoscaler-0.1.0.gem
 pkg/autoscaler-0.2.0.gem
 pkg/autoscaler-0.2.1.gem
 pkg/autoscaler-0.3.0.gem
+pkg/autoscaler-0.4.0.gem
 Rakefile
 README.md
 spec/autoscaler/binary_scaling_strategy_spec.rb
+spec/autoscaler/delayed_shutdown_spec.rb
 spec/autoscaler/heroku_scaler_spec.rb
 spec/autoscaler/sidekiq/activity_spec.rb
 spec/autoscaler/sidekiq/celluloid_monitor_spec.rb
