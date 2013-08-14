@@ -22,7 +22,7 @@ module Autoscaler
         once do
           active_now!
 
-          workers = @scaler.workers
+          workers = :unknown
 
           begin
             sleep(interval)

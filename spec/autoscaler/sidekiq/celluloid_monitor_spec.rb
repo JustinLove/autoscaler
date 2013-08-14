@@ -27,4 +27,13 @@ describe Autoscaler::Sidekiq::CelluloidMonitor do
     scaler.workers.should == 1
     manager.terminate
   end
+
+  it "will downscale with initial workers zero" do
+    system = TestSystem.new(0)
+    scaler = TestScaler.new(0)
+    manager = cut.new(scaler, lambda{|s,t| 0}, system)
+    Timeout.timeout(1) { manager.wait_for_downscale(0.5) }
+    scaler.workers.should == 0
+    manager.terminate
+  end
 end
