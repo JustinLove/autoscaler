@@ -30,7 +30,7 @@ Install the middleware in your `Sidekiq.configure_` blocks
 
     Sidekiq.configure_server do |config|
       config.server_middleware do |chain|
-        chain.add(Autoscaler::Sidekiq::Server, Autoscaler::HerokuScaler.new, 60)
+        chain.add(Autoscaler::Sidekiq::Server, Autoscaler::HerokuScaler.new, 60) # 60 second timeout
       end
     end
 

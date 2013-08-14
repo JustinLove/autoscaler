@@ -31,7 +31,7 @@ Sidekiq.configure_server do |config|
   config.server_middleware do |chain|
     if heroku && ENV['HEROKU_PROCESS'] && heroku[ENV['HEROKU_PROCESS']]
       p "Setting up auto-scaledown"
-      chain.add(Autoscaler::Sidekiq::Server, heroku[ENV['HEROKU_PROCESS']], 60, [ENV['HEROKU_PROCESS']])
+      chain.add(Autoscaler::Sidekiq::Server, heroku[ENV['HEROKU_PROCESS']], 60, [ENV['HEROKU_PROCESS']]) # 60 second timeout
     else
       p "Not scaleable"
     end

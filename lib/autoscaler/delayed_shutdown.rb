@@ -2,7 +2,7 @@ module Autoscaler
   # This is a sort of middleware that keeps the last worker up for a minimum amount of time
   class DelayedShutdown
     # @param [ScalingStrategy] strategy object that makes most decisions
-    # @param [Numeric] timeout time to stay up after base strategy says zero
+    # @param [Numeric] timeout number of seconds to stay up after base strategy says zero
     def initialize(strategy, timeout)
       @strategy = strategy
       @timeout = timeout
