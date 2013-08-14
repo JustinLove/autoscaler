@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'test_system'
 require 'autoscaler/sidekiq/client'
 
 describe Autoscaler::Sidekiq::Client do
@@ -6,10 +7,24 @@ describe Autoscaler::Sidekiq::Client do
   let(:scaler) {TestScaler.new(0)}
   let(:client) {cut.new('queue' => scaler)}
 
-  it 'scales' do
-    client.call(Class, {}, 'queue') {}
-    scaler.workers.should == 1
+  describe 'call' do
+    it 'scales' do
+      client.call(Class, {}, 'queue') {}
+      scaler.workers.should == 1
+    end
+
+    it('yields') {client.call(Class, {}, 'queue') {:foo}.should == :foo}
   end
 
-  it('yields') {client.call(Class, {}, 'queue') {:foo}.should == :foo}
+  describe 'initial workers' do
+    it 'works with default arguments' do
+      client.set_initial_workers
+      scaler.workers.should == 0
+    end
+
+    it 'scales when necessary' do
+      client.set_initial_workers {|q| TestSystem.new(1)}
+      scaler.workers.should == 1
+    end
+  end
 end

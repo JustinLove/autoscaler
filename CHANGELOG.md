@@ -1,8 +1,9 @@
 # Changelog
 
-## 0.4.2
+## 0.5.0
 
-- Corner case if initial worker value from scaler is inaccurate
+- Experimental: `Client#set_initial_workers` to start workers on main process startup; typically:
+    Autoscaler::Sidekiq::Client.add_to_chain(chain, 'default' => heroku).set_initial_workers
 - Ensure that timeout is documented as being in seconds
 - Convert gemspec to wildcard file selection
 
