@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.2
+
+- Corner case if initial worker value from scaler is inaccurate
+- Ensure that timeout is documented as being in seconds
+- Convert gemspec to wildcard file selection
+
+## 0.4.1
+
+- Missing file from gemspec
+
 ## 0.4.0
 
 - Experimental: The default scaling logic is contained in BinaryScalingStrategy.  A strategy object can be passed instead of timeout to the server middleware.
