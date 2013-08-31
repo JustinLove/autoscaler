@@ -14,12 +14,14 @@ module Autoscaler
 
       # Sidekiq middleware api method
       def call(worker_class, item, queue)
+        result = yield
+
         scaler = @scalers[queue]
         if scaler && scaler.workers < 1
           scaler.workers = 1
         end
 
-        yield
+        result
       end
 
       # Check for interrupted or scheduled work on startup.
