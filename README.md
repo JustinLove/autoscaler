@@ -41,10 +41,15 @@ Install the middleware in your `Sidekiq.configure_` blocks
 - The scale-down monitor is triggered on job completion (and server middleware is only run around jobs), so if the server nevers processes any jobs, it won't turn off.
 - The retry and schedule lists are considered - if you schedule a long-running task, the process will not scale-down.
 - If background jobs trigger jobs in other scaled processes, please note you'll need `config.client_middleware` in your `Sidekiq.configure_server` block in order to scale-up.
+- Exceptions while calling the Heroku API are caught and printed by default.  See `HerokuScaler#exception_handler` to override
 
 ## Experimental
 
 You can pass a scaling strategy object instead of the timeout to the server middleware.  The object (or lambda) should respond to `#call(system, idle_time)` and return the desired number of workers.  See `lib/autoscaler/binary_scaling_strategy.rb` for an example.
+
+`Client#set_initial_workers` to start workers on main process startup; typically:
+
+    Autoscaler::Sidekiq::Client.add_to_chain(chain, 'default' => heroku).set_initial_workers
 
 ## Tests
 

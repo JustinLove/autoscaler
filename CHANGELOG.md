@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.0
+
+- Excon errors from the Heroku API are caught be default.  See `HerokuScaler#exception_handler` to override behavior
+- Client side scaling occurs after enquing the job, previously it was before.
+
 ## 0.5.0
 
 - Experimental: `Client#set_initial_workers` to start workers on main process startup; typically:
