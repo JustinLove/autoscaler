@@ -5,6 +5,7 @@ require 'autoscaler/heroku_scaler'
 heroku = nil
 if ENV['HEROKU_APP']
   heroku = Autoscaler::HerokuScaler.new
+  #heroku.exception_handler = lambda {|exception| MyApp.logger.error(exception)}
 end
 
 Sidekiq.configure_client do |config|
