@@ -33,6 +33,10 @@ describe Autoscaler::Sidekiq::EntireQueueSystem do
       subject.queued.should == 0
     end
 
+    it "with no work and no queues" do
+      subject.queued.should == 0
+    end
+
     it "with no scheduled work" do
       subject.scheduled.should == 0
     end

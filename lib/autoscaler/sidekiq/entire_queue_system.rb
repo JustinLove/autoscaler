@@ -12,7 +12,7 @@ module Autoscaler
 
       # @return [Integer] amount work ready to go
       def queued
-        sidekiq_queues.values.map(&:to_i).reduce(&:+)
+        sidekiq_queues.values.map(&:to_i).reduce(&:+) || 0
       end
 
       # @return [Integer] amount of work scheduled for some time in the future
