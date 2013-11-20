@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1
+
+- EntireQueuSystem#queued always returns an integer
+
 ## 0.6.0
 
 - Excon errors from the Heroku API are caught be default.  See `HerokuScaler#exception_handler` to override behavior
