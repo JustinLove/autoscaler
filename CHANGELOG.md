@@ -1,7 +1,8 @@
 # Changelog
 
-## 0.6.1
+## 0.7.0
 
+- Added Autoscaler::LinearScalingStrategy
 - EntireQueuSystem#queued always returns an integer
 
 ## 0.6.0

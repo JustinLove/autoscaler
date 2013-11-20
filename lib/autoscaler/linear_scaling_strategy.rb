@@ -1,6 +1,6 @@
 module Autoscaler
   # Strategies determine the target number of workers
-  # The default strategy has a single worker when there is anything, or shuts it down.
+  # This strategy sets the worker processess in order to have one Sidekiq actor per queued job.  Please note that there is no upper limit.
   class LinearScalingStrategy
     #@param [integer] active_workers number of workers when in the active state.
     def initialize(workers = 1, worker_capacity = 25)
