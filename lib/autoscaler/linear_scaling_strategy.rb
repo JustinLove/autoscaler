@@ -19,7 +19,8 @@ module Autoscaler
       ideal_scale = (percent_capacity * @workers).ceil
       max_scale   = @workers
 
-      return [ideal_scale, max_scale].min
+      target = [ideal_scale, system.workers].max
+      return [max_scale, target].min
     end
 
     private
