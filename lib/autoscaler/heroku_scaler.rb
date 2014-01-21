@@ -1,4 +1,5 @@
 require 'heroku-api'
+require 'autoscaler/counter_cache_memory'
 
 module Autoscaler
   # Wraps the Heroku API to provide just the interface that we need for scaling.
@@ -13,8 +14,7 @@ module Autoscaler
       @client = Heroku::API.new(:api_key => key)
       @type = type
       @app = app
-      @workers = 0
-      @known = Time.now - 1
+      @workers = CounterCacheMemory.new
     end
 
     attr_reader :app
@@ -23,25 +23,22 @@ module Autoscaler
     # Read the current worker count (value may be cached)
     # @return [Numeric] number of workers
     def workers
-      if known?
-        @workers
-      else
-        know heroku_get_workers
-      end
+      @workers.counter {@workers.counter = heroku_get_workers}
     end
 
     # Set the number of workers (noop if workers the same)
     # @param [Numeric] n number of workers
     def workers=(n)
-      if n != @workers || !known?
+      unknown = false
+      current = @workers.counter{unknown = true; 1}
+      if n != current || unknown
         p "Scaling #{type} to #{n}"
         heroku_set_workers(n)
-        know n
+        @workers.counter = n
       end
     end
 
-    # Callable object which responds to exceptions during api calls
-    #
+    # Callable object which responds to exceptions during api calls #
     # @example
     #   heroku.exception_handler = lambda {|exception| MyApp.logger.error(exception)}
     #   heroku.exception_handler = lambda {|exception| raise}
@@ -52,23 +49,20 @@ module Autoscaler
     #   }
     attr_writer :exception_handler
 
+    # Object which supports #counter and #counter=
+    # Defaults to CounterCacheMemory
+    def counter_cache=(cache)
+      @workers = cache
+    end
+
     private
     attr_reader :client
-
-    def know(n)
-      @known = Time.now + 5
-      @workers = n
-    end
-
-    def known?
-      Time.now < @known
-    end
 
     def heroku_get_workers
       client.get_ps(app).body.count {|ps| ps['process'].match /#{type}\.\d?/ }
     rescue Excon::Errors::Error => e
       exception_handler.call(e)
-      @workers
+      0
     end
 
     def heroku_set_workers(n)

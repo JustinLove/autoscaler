@@ -28,7 +28,7 @@ describe Autoscaler::HerokuScaler, :online => true do
     describe "default handler" do
       it {expect{client.workers}.to_not raise_error}
       it {client.workers.should == 0}
-      it {expect{client.workers = 1}.to_not raise_error}
+      it {expect{client.workers = 2}.to_not raise_error}
     end
 
     describe "custom handler" do
