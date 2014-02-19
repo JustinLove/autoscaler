@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'autoscaler/heroku_scaler'
+require 'heroku/api/errors'
 
 describe Autoscaler::HerokuScaler, :online => true do
   let(:cut) {Autoscaler::HerokuScaler}
@@ -18,11 +19,11 @@ describe Autoscaler::HerokuScaler, :online => true do
     its(:workers) {should == 1}
   end
 
-  describe 'exception handling', :focus => true do
+  shared_examples 'exception handler' do |exception_class|
     before do
-      def client.client
-        raise Excon::Errors::SocketError.new(Exception.new('oops'))
-      end
+      client.should_receive(:client){
+        raise exception_class.new(Exception.new('oops'))
+      }
     end
 
     describe "default handler" do
@@ -39,5 +40,10 @@ describe Autoscaler::HerokuScaler, :online => true do
 
       it {client.workers; @caught.should be_true}
     end
+  end
+
+  describe 'exception handling', :focus => true do
+    it_behaves_like 'exception handler', Excon::Errors::SocketError
+    it_behaves_like 'exception handler', Heroku::API::Errors::Error
   end
 end
