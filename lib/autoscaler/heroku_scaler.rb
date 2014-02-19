@@ -60,14 +60,14 @@ module Autoscaler
 
     def heroku_get_workers
       client.get_ps(app).body.count {|ps| ps['process'].match /#{type}\.\d?/ }
-    rescue Excon::Errors::Error => e
+    rescue Excon::Errors::Error, Heroku::API::Errors::Error => e
       exception_handler.call(e)
       0
     end
 
     def heroku_set_workers(n)
       client.post_ps_scale(app, type, n)
-    rescue Excon::Errors::Error => e
+    rescue Excon::Errors::Error, Heroku::API::Errors::Error => e
       exception_handler.call(e)
     end
 
