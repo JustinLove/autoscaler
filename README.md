@@ -45,11 +45,19 @@ Install the middleware in your `Sidekiq.configure_` blocks
 
 ## Experimental
 
+### Strategies
+
 You can pass a scaling strategy object instead of the timeout to the server middleware.  The object (or lambda) should respond to `#call(system, idle_time)` and return the desired number of workers.  See `lib/autoscaler/binary_scaling_strategy.rb` for an example.
+
+### Initial Workers
 
 `Client#set_initial_workers` to start workers on main process startup; typically:
 
     Autoscaler::Sidekiq::Client.add_to_chain(chain, 'default' => heroku).set_initial_workers
+
+### Working caching
+
+    scaler.counter_cache = Autoscaler::CounterCacheRedis(Sidekiq.method(:redis))
 
 ## Tests
 

@@ -4,6 +4,7 @@
 
 - Extracted caching of Heroku worker counts and added experimental Redis cache
     scaler.counter_cache = Autoscaler::CounterCacheRedis(Sidekiq.method(:redis))
+- Now rescues Heroku::Api::Errors in addition to Excon::Errors
 
 ## 0.7.0
 
