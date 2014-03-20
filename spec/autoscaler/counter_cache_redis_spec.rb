@@ -18,6 +18,15 @@ describe Autoscaler::CounterCacheRedis do
     subject.counter.should == 2
   end
 
+  it 'does not conflict with multiple worker types' do
+    other_worker_cache = cut.new(@redis, 300, 'other_worker')
+    subject.counter = 1
+    other_worker_cache.counter = 2
+
+    subject.counter.should == 1
+    other_worker_cache.counter = 2
+  end
+
   it 'times out' do
     cache = cut.new(Sidekiq.method(:redis), 1) # timeout 0 invalid
     cache.counter = 3
