@@ -7,14 +7,16 @@ module Autoscaler
     #   ConnectionPool: e.g. what you pass to Sidekiq.redis=
     #   Redis client: e.g. Redis.connect
     # @param [Numeric] timeout number of seconds to allow before expiration
-    def initialize(redis, timeout = 5 * 60)
+    # @param [String] worker_type the name of the worker type, for cache keys
+    def initialize(redis, timeout = 5 * 60, worker_type = 'worker')
       @redis = redis
       @timeout = timeout
+      @worker_type = worker_type
     end
 
     # @param [Numeric] value new counter value
     def counter=(value)
-      redis {|c| c.setex('autoscaler:workers', @timeout, value)}
+      redis {|c| c.setex(key, @timeout, value)}
     end
 
     # Raised when no block is provided to #counter
@@ -22,7 +24,7 @@ module Autoscaler
 
     # Current value.  Uses the Hash#fetch api - pass a block to use in place of expired values or it will raise an exception.
     def counter
-      value = redis {|c| c.get('autoscaler:workers')}
+      value = redis {|c| c.get(key)}
       return value.to_i if value
       return yield if block_given?
       raise Expired
@@ -30,6 +32,10 @@ module Autoscaler
 
     private
     attr_reader :timeout
+
+    def key
+      ['autoscaler', 'workers', @worker_type] * ':'
+    end
 
     def redis(&block)
       if @redis.respond_to?(:call)
