@@ -4,6 +4,7 @@
 
 - CounterCacheRedis.new now takes a third parameter `worker_type`, a string used in the
   Redis cache key. Allows for caching counts for various types of workers, not just `worker`
+- Support for Sidekiq 3.0
 
 ## 0.8.0
 

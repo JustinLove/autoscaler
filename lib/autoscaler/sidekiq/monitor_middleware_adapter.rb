@@ -21,7 +21,7 @@ module Autoscaler
       end
 
       # Sidekiq middleware api entry point
-      def call(worker, msg, queue)
+      def call(worker, msg, queue, _ = nil)
         monitor.async.starting_job
         yield
       ensure

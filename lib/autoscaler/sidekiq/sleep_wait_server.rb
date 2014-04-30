@@ -10,42 +10,41 @@ module Autoscaler
       # @param [Numeric] timeout number of seconds to wait before shutdown
       # @param [Array[String]] specified_queues list of queues to monitor to determine if there is work left.  Defaults to all sidekiq queues.
       def initialize(scaler, timeout, specified_queues = nil)
-        @scaler = scaler
-        @activity = Activity.new(timeout)
-        @system = QueueSystem.new(specified_queues)
+        @scaler  = scaler
+        @timeout = timeout
+        @system  = QueueSystem.new(specified_queues)
       end
 
       # Sidekiq middleware api entry point
-      def call(worker, msg, queue)
-        working!(queue)
+      def call(worker, msg, queue, redis = ::Sidekiq.method(:redis))
+        working!(queue, redis)
         yield
       ensure
-        working!(queue)
-        wait_for_task_or_scale
+        working!(queue, redis)
+        wait_for_task_or_scale(redis)
       end
 
       private
-      def wait_for_task_or_scale
+      def wait_for_task_or_scale(redis)
         loop do
           return if pending_work?
-          return @scaler.workers = 0 if idle?
+          return @scaler.workers = 0 if idle?(redis)
           sleep(0.5)
         end
       end
 
       attr_reader :system
-      attr_reader :activity
 
       def pending_work?
         system.queued > 0 || system.scheduled > 0 || system.retrying > 0
       end
 
-      def working!(queue)
-        activity.working!(queue)
+      def working!(queue, redis)
+        Activity.new(@timeout, redis).working!(queue)
       end
 
-      def idle?
-        activity.idle?(system.queue_names)
+      def idle?(redis)
+        Activity.new(@timeout, redis).idle?(system.queue_names)
       end
     end
   end

@@ -13,7 +13,7 @@ module Autoscaler
       end
 
       # Sidekiq middleware api method
-      def call(worker_class, item, queue)
+      def call(worker_class, item, queue, _ = nil)
         result = yield
 
         scaler = @scalers[queue]

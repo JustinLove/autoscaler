@@ -13,6 +13,11 @@ describe Autoscaler::Sidekiq::Client do
       scaler.workers.should == 1
     end
 
+    it 'scales with a redis pool' do
+      client.call(Class, {}, 'queue', ::Sidekiq.method(:redis)) {}
+      scaler.workers.should == 1
+    end
+
     it('yields') {client.call(Class, {}, 'queue') {:foo}.should == :foo}
   end
 

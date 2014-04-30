@@ -24,12 +24,12 @@ module Autoscaler
 
       # @return [Integer] amount of work scheduled for some time in the future
       def scheduled
-        count_sorted_set("schedule")
+        count_set(::Sidekiq::ScheduledSet.new)
       end
 
       # @return [Integer] amount of work still being retried
       def retrying
-        count_sorted_set("retry")
+        count_set(::Sidekiq::RetrySet.new)
       end
 
       # @return [Array[String]]
@@ -40,9 +40,8 @@ module Autoscaler
         ::Sidekiq::Stats.new.queues
       end
 
-      def count_sorted_set(sorted_set)
-        ss = ::Sidekiq::SortedSet.new(sorted_set)
-        ss.count { |job| queue_names.include?(job.queue) }
+      def count_set(set)
+        set.count { |job| queue_names.include?(job.queue) }
       end
     end
   end

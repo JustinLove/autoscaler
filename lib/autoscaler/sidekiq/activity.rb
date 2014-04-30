@@ -5,8 +5,9 @@ module Autoscaler
     # Tracks activity timeouts using Sidekiq's redis connection
     class Activity
       # @param [Numeric] timeout number of seconds to wait before shutdown
-      def initialize(timeout)
+      def initialize(timeout, redis = ::Sidekiq.method(:redis))
         @timeout = timeout
+        @redis   = redis
       end
 
       # Record that a queue has activity
@@ -38,13 +39,23 @@ module Autoscaler
       end
 
       def last_activity(queues)
-        ::Sidekiq.redis {|c|
+        redis {|c|
           queues.map {|q| c.get('background_activity:'+q)}.compact.max
         }
       end
 
       def active_at(queue, time)
-        ::Sidekiq.redis {|c| c.set('background_activity:'+queue, time)}
+        redis {|c| c.set('background_activity:'+queue, time)}
+      end
+
+      def redis(&block)
+        if @redis.respond_to?(:call)
+          @redis.call(&block)
+        elsif @redis.respond_to?(:with)
+          @redis.with(&block)
+        else
+          block.call(@redis)
+        end
       end
     end
   end
