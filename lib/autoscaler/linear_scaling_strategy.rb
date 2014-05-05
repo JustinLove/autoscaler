@@ -23,8 +23,10 @@ module Autoscaler
       scaled_capacity_percentage = scale_factor * @total_capacity
 
       ideal_workers = ([0, scaled_capacity_percentage].max * @max_workers).ceil
+      max_workers   = [ideal_workers,  @max_workers].min # Don't scale up past number of max workers
+      min_workers   = [system.workers, max_workers].max  # Don't scale down past number of currently engaged workers
 
-      return [ideal_workers, @max_workers].min
+      return [min_workers, max_workers].max
     end
 
     private

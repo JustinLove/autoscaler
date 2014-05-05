@@ -52,4 +52,10 @@ describe Autoscaler::LinearScalingStrategy do
     strategy = cut.new(5, 4, 0.5)
     strategy.call(system, 1).should == 5
   end
+
+  it "doesn't scale down engaged workers" do
+    system = TestSystem.new(0, 2)
+    strategy = cut.new(5, 4)
+    strategy.call(system, 1).should == 2
+  end
 end
