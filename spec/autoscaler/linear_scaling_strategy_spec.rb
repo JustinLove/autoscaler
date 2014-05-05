@@ -34,4 +34,22 @@ describe Autoscaler::LinearScalingStrategy do
     strategy = cut.new(5, 2)
     strategy.call(system, 1).should == 3
   end
+
+  it "doesn't scale unless minimum is met" do
+    system = TestSystem.new(2)
+    strategy = cut.new(10, 4, 0.5)
+    strategy.call(system, 1).should == 0
+  end
+
+  it "scales proprotionally with a minimum" do
+    system = TestSystem.new(3)
+    strategy = cut.new(10, 4, 0.5)
+    strategy.call(system, 1).should == 1
+  end
+
+  it "scales maximally with a minimum" do
+    system = TestSystem.new(21)
+    strategy = cut.new(5, 4, 0.5)
+    strategy.call(system, 1).should == 5
+  end
 end
