@@ -48,8 +48,20 @@ describe Autoscaler::LinearScalingStrategy do
   end
 
   it "scales maximally with a minimum" do
-    system = TestSystem.new(21)
+    system = TestSystem.new(25)
     strategy = cut.new(5, 4, 0.5)
+    strategy.call(system, 1).should == 5
+  end
+
+  it "scales proportionally with a minimum > 1" do
+    system = TestSystem.new(12)
+    strategy = cut.new(5, 4, 2)
+    strategy.call(system, 1).should == 2
+  end
+
+  it "scales maximally with a minimum factor > 1" do
+    system = TestSystem.new(30)
+    strategy = cut.new(5, 4, 2)
     strategy.call(system, 1).should == 5
   end
 
@@ -57,5 +69,11 @@ describe Autoscaler::LinearScalingStrategy do
     system = TestSystem.new(0, 2)
     strategy = cut.new(5, 4)
     strategy.call(system, 1).should == 2
+  end
+
+  it "doesn't scale above max workers even if engaged workers is greater" do
+    system = TestSystem.new(40, 6)
+    strategy = cut.new(5, 4)
+    strategy.call(system, 1).should == 5
   end
 end
