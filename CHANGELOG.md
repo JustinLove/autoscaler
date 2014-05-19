@@ -10,7 +10,7 @@
 - LinearScalingStrategy now accepts a minimum amount of work (as a percentage of worker capacity)
   required to begin scaling up. E.g LinearScalingStrategy.new(10, 4, 0.5) will scale to one worker
   after 4*0.5 = 2 jobs are enqueued, and a maximum of 10 workers at 10*4 jobs. Old behavior is preserved
-  with a default value of 0. However, LSS now no longer scales down currently engaged workers.
+  with a default value of 0.
 
 ## 0.8.0
 
