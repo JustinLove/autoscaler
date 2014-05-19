@@ -12,7 +12,7 @@ Tested on Ruby 1.9.2 and Heroku Cedar stack.
 
 ## Getting Started
 
-This gem uses the [Herkou-Api](https://github.com/heroku/heroku.rb) gem, which requires an API key from Heroku.  It will also need the heroku app name.  By default, these are specified through environment variables.  You can also pass them to HerokuScaler explicitly.
+This gem uses the [Heroku-Api](https://github.com/heroku/heroku.rb) gem, which requires an API key from Heroku.  It will also need the heroku app name.  By default, these are specified through environment variables.  You can also pass them to HerokuScaler explicitly.
 
     HEROKU_API_KEY=.....
     HEROKU_APP=....
