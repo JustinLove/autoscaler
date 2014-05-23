@@ -10,11 +10,11 @@ module Autoscaler
         @queue_names = specified_queues
       end
 
-      # @return [Integer] number of worker actively engaged
+      # @return [Integer] number of workers actively engaged
       def workers
-        ::Sidekiq::Workers.new.count {|name, work|
+        ::Sidekiq::Workers.new.select {|_, _, work|
           queue_names.include?(work['queue'])
-        }
+        }.map {|pid, _, _| pid}.uniq.size
       end
 
       # @return [Integer] amount work ready to go

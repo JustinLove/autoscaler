@@ -5,9 +5,10 @@ module Autoscaler
     # Interface to to interrogate the queuing system
     # Includes every queue
     class EntireQueueSystem
-      # @return [Integer] number of worker actively engaged
+      # @return [Integer] number of workers actively engaged
       def workers
-        ::Sidekiq::Workers.new.size
+        ::Sidekiq::Workers.new.map {|pid, _, _| pid}.uniq.size
+        # #size may be out-of-date.
       end
 
       # @return [Integer] amount work ready to go

@@ -2,6 +2,7 @@
 
 ## 0.10.0
 - Require Sidekiq 3.
+- QueueSystem#workers returns the number of engaged SK processes.
 
 ## 0.9.0
 
