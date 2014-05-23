@@ -2,8 +2,6 @@ source "http://rubygems.org"
 
 gemspec
 
-gem 'appraisal'
-
 group :developent do
   gem 'rb-fsevent', '~> 0.9.1'
 end

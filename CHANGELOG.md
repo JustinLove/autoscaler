@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.10.0
+- Require Sidekiq 3.
+
 ## 0.9.0
 
 - CounterCacheRedis.new now takes a third parameter `worker_type`, a string used in the
