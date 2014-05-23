@@ -65,13 +65,13 @@ describe Autoscaler::LinearScalingStrategy do
     strategy.call(system, 1).should == 5
   end
 
-  xit "doesn't scale down engaged workers" do
+  it "doesn't scale down engaged workers" do
     system = TestSystem.new(0, 2)
     strategy = cut.new(5, 4)
     strategy.call(system, 1).should == 2
   end
 
-  xit "doesn't scale above max workers even if engaged workers is greater" do
+  it "doesn't scale above max workers even if engaged workers is greater" do
     system = TestSystem.new(40, 6)
     strategy = cut.new(5, 4)
     strategy.call(system, 1).should == 5
