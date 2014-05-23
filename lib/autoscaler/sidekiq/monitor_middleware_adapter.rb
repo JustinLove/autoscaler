@@ -25,7 +25,8 @@ module Autoscaler
         monitor.async.starting_job
         yield
       ensure
-        monitor.async.finished_job
+        # monitor might have gone, e.g. if Sidekiq has received SIGTERM
+        monitor.async.finished_job if monitor
       end
 
       private
