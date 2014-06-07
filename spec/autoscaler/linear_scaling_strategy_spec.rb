@@ -76,4 +76,10 @@ describe Autoscaler::LinearScalingStrategy do
     strategy = cut.new(5, 4)
     strategy.call(system, 1).should == 5
   end
+
+  it "returns zero if requested capacity is zero" do
+    system = TestSystem.new(0, 0)
+    strategy = cut.new(0, 0)
+    strategy.call(system, 5).should == 0
+  end
 end

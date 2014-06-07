@@ -20,6 +20,8 @@ module Autoscaler
 
       # Scale requested capacity taking into account the minimum required
       scale_factor = (requested_capacity_percentage - @min_capacity_percentage) / (@total_capacity - @min_capacity_percentage)
+      scale_factor = 0 if scale_factor.nan? # Handle DIVZERO
+
       scaled_capacity_percentage = scale_factor * @total_capacity
 
       ideal_workers = ([0, scaled_capacity_percentage].max * @max_workers).ceil
