@@ -36,7 +36,7 @@ module Autoscaler
       attr_reader :system
 
       def pending_work?
-        system.queued > 0 || system.scheduled > 0 || system.retrying > 0
+        system.workers > 0 || system.queued > 0 || system.scheduled > 0 || system.retrying > 0
       end
 
       def working!(queue, redis)
