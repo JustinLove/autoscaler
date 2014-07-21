@@ -29,7 +29,7 @@ module Autoscaler
 
     private
     def total_work(system)
-      system.workers + system.queued + system.scheduled + system.retrying
+      system.total_work
     end
   end
 end

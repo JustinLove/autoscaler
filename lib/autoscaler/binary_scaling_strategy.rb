@@ -20,7 +20,7 @@ module Autoscaler
 
     private
     def active?(system)
-      system.queued > 0 || system.scheduled > 0 || system.retrying > 0 || system.workers > 0
+      system.any_work?
     end
   end
 end
