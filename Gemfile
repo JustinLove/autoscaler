@@ -2,8 +2,10 @@ source "http://rubygems.org"
 
 gemspec
 
-group :developent do
+group :development do
   gem 'rb-fsevent', '~> 0.9.1'
+  gem 'cupertino'
+  gem 'transpec'
 end
 
 group :docs do
