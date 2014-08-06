@@ -7,7 +7,10 @@ describe Autoscaler::HerokuScaler, :online => true do
   let(:client) {cut.new}
   subject {client}
 
-  its(:workers) {should == 0}
+  describe '#workers' do
+    subject { super().workers }
+    it {is_expected.to eq(0)}
+  end
 
   describe 'scaled' do
     around do |example|
@@ -16,19 +19,22 @@ describe Autoscaler::HerokuScaler, :online => true do
       client.workers = 0
     end
 
-    its(:workers) {should == 1}
+    describe '#workers' do
+      subject { super().workers }
+      it {is_expected.to eq(1)}
+    end
   end
 
   shared_examples 'exception handler' do |exception_class|
     before do
-      client.should_receive(:client){
+      expect(client).to receive(:client){
         raise exception_class.new(Exception.new('oops'))
       }
     end
 
     describe "default handler" do
       it {expect{client.workers}.to_not raise_error}
-      it {client.workers.should == 0}
+      it {expect(client.workers).to eq(0)}
       it {expect{client.workers = 2}.to_not raise_error}
     end
 
@@ -38,7 +44,7 @@ describe Autoscaler::HerokuScaler, :online => true do
         client.exception_handler = lambda {|exception| @caught = true}
       end
 
-      it {client.workers; @caught.should be_true}
+      it {client.workers; expect(@caught).to be_truthy}
     end
   end
 

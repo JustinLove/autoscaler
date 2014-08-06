@@ -16,19 +16,19 @@ describe Autoscaler::Sidekiq::Activity do
       activity.idle!('queue')
       other_process.working!('other_queue')
     end
-    it {activity.should be_idle(['queue'])}
+    it {expect(activity).to be_idle(['queue'])}
   end
 
   it 'passed a connection pool' do
     activity = cut.new(5, @redis)
     activity.working!('queue')
-    activity.should_not be_idle(['queue'])
+    expect(activity).not_to be_idle(['queue'])
   end
 
   it 'passed a plain connection' do
     connection = Redis.connect(:url => 'http://localhost:9736', :namespace => 'autoscaler')
     activity = cut.new(5, connection)
     activity.working!('queue')
-    activity.should_not be_idle(['queue'])
+    expect(activity).not_to be_idle(['queue'])
   end
 end

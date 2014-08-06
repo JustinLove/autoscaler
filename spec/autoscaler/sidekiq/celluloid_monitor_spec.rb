@@ -16,7 +16,7 @@ describe Autoscaler::Sidekiq::CelluloidMonitor do
     system = TestSystem.new(0)
     manager = cut.new(scaler, lambda{|s,t| 0}, system)
     Timeout.timeout(1) { manager.wait_for_downscale(0.5) }
-    scaler.workers.should == 0
+    expect(scaler.workers).to eq(0)
     manager.terminate
   end
 
@@ -24,7 +24,7 @@ describe Autoscaler::Sidekiq::CelluloidMonitor do
     system = TestSystem.new(1)
     manager = cut.new(scaler, lambda{|s,t| 1}, system)
     expect {Timeout.timeout(1) { manager.wait_for_downscale(0.5) }}.to raise_error Timeout::Error
-    scaler.workers.should == 1
+    expect(scaler.workers).to eq(1)
     manager.terminate
   end
 
@@ -33,7 +33,7 @@ describe Autoscaler::Sidekiq::CelluloidMonitor do
     scaler = TestScaler.new(0)
     manager = cut.new(scaler, lambda{|s,t| 0}, system)
     Timeout.timeout(1) { manager.wait_for_downscale(0.5) }
-    scaler.workers.should == 0
+    expect(scaler.workers).to eq(0)
     manager.terminate
   end
 end
