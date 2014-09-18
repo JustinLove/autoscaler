@@ -1,6 +1,6 @@
 # Sidekiq Heroku Autoscaler
 
-[Sidekiq](https://github.com/mperham/sidekiq) performs background jobs.  While it's threading model allows it to scale easier than worker-pre-process background systems, people running test or lightly loaded systems on [Heroku](http://www.heroku.com/) still want to scale down to zero to avoid racking up charges.
+[Sidekiq](https://github.com/mperham/sidekiq) performs background jobs.  While its threading model allows it to scale easier than worker-pre-process background systems, people running test or lightly loaded systems on [Heroku](http://www.heroku.com/) still want to scale down to zero to avoid racking up charges.
 
 ## Requirements
 
