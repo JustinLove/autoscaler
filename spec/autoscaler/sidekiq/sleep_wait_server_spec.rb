@@ -13,15 +13,15 @@ describe Autoscaler::Sidekiq::SleepWaitServer do
 
   shared_examples "a sleepwait server" do
   it "scales with no work" do
-    server.stub(:pending_work?).and_return(false)
+    allow(server).to receive(:pending_work?).and_return(false)
     when_run
-    scaler.workers.should == 0
+    expect(scaler.workers).to eq(0)
   end
 
   it "does not scale with pending work" do
-    server.stub(:pending_work?).and_return(true)
+    allow(server).to receive(:pending_work?).and_return(true)
     when_run
-    scaler.workers.should == 1
+    expect(scaler.workers).to eq(1)
   end
   end
 
@@ -41,5 +41,5 @@ describe Autoscaler::Sidekiq::SleepWaitServer do
   end
   end
 
-  it('yields') {server.call(Object.new, {}, 'queue') {:foo}.should == :foo}
+  it('yields') {expect(server.call(Object.new, {}, 'queue') {:foo}).to eq(:foo)}
 end

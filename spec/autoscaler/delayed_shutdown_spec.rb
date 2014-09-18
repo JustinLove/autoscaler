@@ -7,17 +7,17 @@ describe Autoscaler::DelayedShutdown do
 
   it "returns normal values" do
     strategy = cut.new(lambda{|s,t| 2}, 0)
-    strategy.call(nil, 1).should == 2
+    expect(strategy.call(nil, 1)).to eq(2)
   end
 
   it "delays zeros" do
     strategy = cut.new(lambda{|s,t| 0}, 60)
-    strategy.call(nil, 1).should == 1
+    expect(strategy.call(nil, 1)).to eq(1)
   end
 
   it "eventually returns zero" do
     strategy = cut.new(lambda{|s,t| 0}, 60)
-    strategy.stub(:level_idle_time).and_return(61)
-    strategy.call(nil, 61).should == 0
+    allow(strategy).to receive(:level_idle_time).and_return(61)
+    expect(strategy.call(nil, 61)).to eq(0)
   end
 end
