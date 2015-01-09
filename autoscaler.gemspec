@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Autoscaler::VERSION
   s.authors     = ["Justin Love", "Fix Peña"]
   s.email       = ["git@JustinLove.name"]
-  s.homepage    = ""
+  s.homepage    = 'https://github.com/JustinLove/autoscaler'
   s.summary     = %q{Start/stop Sidekiq workers on Heroku}
   s.description = %q{Currently provides a Sidekiq middleware that does 0/1 scaling of Heroku processes}
 
