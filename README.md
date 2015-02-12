@@ -17,6 +17,10 @@ This gem uses the [Heroku-Api](https://github.com/heroku/heroku.rb) gem, which r
     HEROKU_API_KEY=.....
     HEROKU_APP=....
 
+This gem assumes the name of the Heroku process to be 'worker' when it invokes the logic to scale Sidekiq up and down. You can optionally customize the name of the process with the following environment variable
+
+    SIDEKIQ_WORKER_NAME=....
+
 Install the middleware in your `Sidekiq.configure_` blocks
 
     require 'autoscaler/sidekiq'
