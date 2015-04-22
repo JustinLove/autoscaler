@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Autoscaler::VERSION
   s.authors     = ["Justin Love", "Fix Peña"]
   s.email       = ["git@JustinLove.name"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/JustinLove/autoscaler"
   s.summary     = %q{Start/stop Sidekiq workers on Heroku}
   s.description = %q{Currently provides a Sidekiq middleware that does 0/1 scaling of Heroku processes}
 
@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.require_paths = ["lib"]
 
-  s.add_runtime_dependency "sidekiq", '~> 3.3.0'
+  s.add_runtime_dependency "sidekiq", '~> 3'
   s.add_runtime_dependency "heroku-api"
 
   s.add_development_dependency "bundler"
