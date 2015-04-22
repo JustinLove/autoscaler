@@ -11,11 +11,11 @@ describe Autoscaler::CounterCacheRedis do
   subject {cut.new(Sidekiq.method(:redis))}
 
   it {expect{subject.counter}.to raise_error(cut::Expired)}
-  it {subject.counter{1}.should == 1}
+  it {expect(subject.counter{1}).to eq 1}
 
   it 'set and store' do
     subject.counter = 2
-    subject.counter.should == 2
+    expect(subject.counter).to eq 2
   end
 
   it 'does not conflict with multiple worker types' do
@@ -23,7 +23,7 @@ describe Autoscaler::CounterCacheRedis do
     subject.counter = 1
     other_worker_cache.counter = 2
 
-    subject.counter.should == 1
+    expect(subject.counter).to eq 1
     other_worker_cache.counter = 2
   end
 
@@ -37,13 +37,13 @@ describe Autoscaler::CounterCacheRedis do
   it 'passed a connection pool' do
     cache = cut.new(@redis)
     cache.counter = 4
-    cache.counter.should == 4
+    expect(cache.counter).to eq 4
   end
 
   it 'passed a plain connection' do
     connection = Redis.connect(:url => 'http://localhost:9736', :namespace => 'autoscaler')
     cache = cut.new connection
     cache.counter = 5
-    cache.counter.should == 5
+    expect(cache.counter).to eq 5
   end
 end

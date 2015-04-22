@@ -5,12 +5,12 @@ describe Autoscaler::CounterCacheMemory do
   let(:cut) {Autoscaler::CounterCacheMemory}
 
   it {expect{cut.new.counter}.to raise_error(cut::Expired)}
-  it {cut.new.counter{1}.should == 1}
+  it {expect(cut.new.counter{1}).to eq 1}
 
   it 'set and store' do
     cache = cut.new
     cache.counter = 1
-    cache.counter.should == 1
+    expect(cache.counter).to eq 1
   end
 
   it 'times out' do
