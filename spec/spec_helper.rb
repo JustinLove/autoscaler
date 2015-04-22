@@ -1,3 +1,4 @@
+require 'rspec/its'
 require 'sidekiq'
 REDIS = Sidekiq::RedisConnection.create(:url => 'http://localhost:9736', :namespace => 'autoscaler')
 
