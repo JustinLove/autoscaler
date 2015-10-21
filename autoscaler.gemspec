@@ -18,8 +18,8 @@ Gem::Specification.new do |s|
 
   s.require_paths = ["lib"]
 
-  s.add_runtime_dependency "sidekiq", '~> 3.4.2'
-  s.add_runtime_dependency "celluloid", '~> 0.16.0'
+  s.add_runtime_dependency "sidekiq", '~> 3.5.1'
+  s.add_runtime_dependency "celluloid", '~> 0.17.2'
   s.add_runtime_dependency "heroku-api"
 
   s.add_development_dependency "bundler"

@@ -1,4 +1,4 @@
-require 'celluloid'
+require 'celluloid/current'
 
 module Autoscaler
   module Sidekiq

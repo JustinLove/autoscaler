@@ -13,10 +13,12 @@ module Autoscaler
       # @param [Array[String]] specified_queues list of queues to monitor to determine if there is work left.  Defaults to all sidekiq queues.
       def initialize(scaler, timeout, specified_queues = nil)
         unless monitor
-          CelluloidMonitor.supervise_as(:autoscaler_monitor,
+          CelluloidMonitor.supervise :as => :autoscaler_monitor,
+                                     :args => [
                                         scaler,
                                         strategy(timeout),
-                                        QueueSystem.new(specified_queues))
+                                        QueueSystem.new(specified_queues),
+                                     ]
         end
       end
 
