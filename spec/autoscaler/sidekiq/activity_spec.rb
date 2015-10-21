@@ -26,7 +26,7 @@ describe Autoscaler::Sidekiq::Activity do
   end
 
   it 'passed a plain connection' do
-    connection = Redis.connect(:url => 'http://localhost:9736', :namespace => 'autoscaler')
+    connection = Redis.connect(:url => 'redis://localhost:9736', :namespace => 'autoscaler')
     activity = cut.new(5, connection)
     activity.working!('queue')
     activity.should_not be_idle(['queue'])

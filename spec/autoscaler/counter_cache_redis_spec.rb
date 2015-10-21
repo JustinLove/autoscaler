@@ -41,7 +41,7 @@ describe Autoscaler::CounterCacheRedis do
   end
 
   it 'passed a plain connection' do
-    connection = Redis.connect(:url => 'http://localhost:9736', :namespace => 'autoscaler')
+    connection = Redis.connect(:url => 'redis://localhost:9736', :namespace => 'autoscaler')
     cache = cut.new connection
     cache.counter = 5
     cache.counter.should == 5
