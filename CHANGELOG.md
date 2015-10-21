@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.0
+
+- Call the SideKiq quiet api when shutting down
+
 ## 0.10.0
 - Require Sidekiq 3.
 - Linear Scaling Strategy will not scale down past number of active workers. Assumes 1-1 SK process/dyno mapping.

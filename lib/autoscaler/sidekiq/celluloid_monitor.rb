@@ -29,6 +29,7 @@ module Autoscaler
             target_workers = @strategy.call(@system, idle_time)
             workers = @scaler.workers = target_workers unless workers == target_workers
           end while workers > 0
+          ::Sidekiq::ProcessSet.new.each(&:quiet!)
         end
       end
 
