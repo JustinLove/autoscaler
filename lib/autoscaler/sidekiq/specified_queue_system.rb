@@ -32,6 +32,16 @@ module Autoscaler
         count_set(::Sidekiq::RetrySet.new)
       end
 
+      # @return [Boolean] if any kind of work still needs to be done
+      def any_work?
+        queued > 0 || scheduled > 0 || retrying > 0 || workers > 0
+      end
+
+      # @return [Integer] total amount of work
+      def total_work
+        queued + scheduled + retrying + workers
+      end
+
       # @return [Array[String]]
       attr_reader :queue_names
 
