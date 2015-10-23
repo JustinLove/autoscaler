@@ -6,7 +6,7 @@ module Autoscaler
     class CelluloidMonitor
       include Celluloid
 
-      # @param [scaler] scaler object that actually performs scaling operations (e.g. {HerokuScaler})
+      # @param [scaler] scaler object that actually performs scaling operations (e.g. {HerokuPlatformScaler})
       # @param [Strategy] strategy object that decides the target number of workers (e.g. {BinaryScalingStrategy})
       # @param [System] system interface to the queuing system for use by the strategy
       def initialize(scaler, strategy, system)

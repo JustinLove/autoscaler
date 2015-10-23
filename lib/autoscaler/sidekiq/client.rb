@@ -6,7 +6,7 @@ module Autoscaler
     # Sidekiq client middleware
     # Performs scale-up when items are queued and there are no workers running
     class Client
-      # @param [Hash] scalers map of queue(String) => scaler (e.g. {HerokuScaler}).
+      # @param [Hash] scalers map of queue(String) => scaler (e.g. {HerokuPlatformScaler}).
       #   Which scaler to use for each sidekiq queue
       def initialize(scalers)
         @scalers = scalers

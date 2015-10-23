@@ -1,15 +1,15 @@
 require 'sidekiq'
 require 'autoscaler/sidekiq'
-require 'autoscaler/heroku_scaler'
+require 'autoscaler/heroku_platform_scaler'
 
 heroku = nil
 if ENV['HEROKU_APP']
   heroku = {}
   scaleable = %w[default import] - (ENV['ALWAYS'] || '').split(' ')
   scaleable.each do |queue|
-    heroku[queue] = Autoscaler::HerokuScaler.new(
+    heroku[queue] = Autoscaler::HerokuPlatformScaler.new(
       queue,
-      ENV['HEROKU_API_KEY'],
+      ENV['HEROKU_ACCESS_TOKEN'],
       ENV['HEROKU_APP'])
   end
 end

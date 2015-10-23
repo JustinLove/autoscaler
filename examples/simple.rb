@@ -1,10 +1,10 @@
 require 'sidekiq'
 require 'autoscaler/sidekiq'
-require 'autoscaler/heroku_scaler'
+require 'autoscaler/heroku_platform_scaler'
 
 heroku = nil
 if ENV['HEROKU_APP']
-  heroku = Autoscaler::HerokuScaler.new
+  heroku = Autoscaler::HerokuPlatformScaler.new
   #heroku.exception_handler = lambda {|exception| MyApp.logger.error(exception)}
 end
 
