@@ -7,6 +7,7 @@
 - QueueSystem#workers returns the number of engaged SK processes.
 - Call the SideKiq quiet api when shutting down
 - Count workers currently running (Joel Van Horn)
+- Update gems and use RSpec expect syntax
 
 ## 0.9.0
 
