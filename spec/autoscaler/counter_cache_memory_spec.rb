@@ -16,6 +16,6 @@ describe Autoscaler::CounterCacheMemory do
   it 'times out' do
     cache = cut.new(0)
     cache.counter = 1
-    expect{cache.counter.should}.to raise_error(cut::Expired)
+    expect{cache.counter}.to raise_error(cut::Expired)
   end
 end
