@@ -11,6 +11,6 @@ describe Autoscaler::Sidekiq::MonitorMiddlewareAdapter do
   let(:scaler) {TestScaler.new(1)}
   let(:server) {cut.new(scaler, 0, ['queue'])}
 
-  it('yields') {server.call(Object.new, {}, 'queue') {:foo}.should == :foo}
-  it('yields with a redis pool') {server.call(Object.new, {}, 'queue', Sidekiq.method(:redis)) {:foo}.should == :foo}
+  it('yields') {expect(server.call(Object.new, {}, 'queue') {:foo}).to eq :foo}
+  it('yields with a redis pool') {expect(server.call(Object.new, {}, 'queue', Sidekiq.method(:redis)) {:foo}).to eq :foo}
 end

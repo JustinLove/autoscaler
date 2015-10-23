@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "bundler"
   s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec-its"
   s.add_development_dependency "guard-rspec"
   s.add_development_dependency "guard-process"
 end

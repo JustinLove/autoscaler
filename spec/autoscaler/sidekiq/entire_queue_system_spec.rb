@@ -24,42 +24,42 @@ describe Autoscaler::Sidekiq::EntireQueueSystem do
 
   subject {cut.new}
 
-  it {subject.queue_names.should == []}
-  it {subject.workers.should == 0}
+  it {expect(subject.queue_names).to eq []}
+  it {expect(subject.workers).to eq 0}
 
   describe 'no queued work' do
     it "with no work" do
-      subject.stub(:sidekiq_queues).and_return({'queue' => 0, 'another_queue' => 0})
-      subject.queued.should == 0
+      allow(subject).to receive(:sidekiq_queues).and_return({'queue' => 0, 'another_queue' => 0})
+      expect(subject.queued).to eq 0
     end
 
     it "with no work and no queues" do
-      subject.queued.should == 0
+      expect(subject.queued).to eq 0
     end
 
     it "with no scheduled work" do
-      subject.scheduled.should == 0
+      expect(subject.scheduled).to eq 0
     end
 
     it "with no retry work" do
-      subject.retrying.should == 0
+      expect(subject.retrying).to eq 0
     end
   end
 
   describe 'with queued work' do
     it "with enqueued work" do
-      subject.stub(:sidekiq_queues).and_return({'queue' => 1})
-      subject.queued.should == 1
+      allow(subject).to receive(:sidekiq_queues).and_return({'queue' => 1})
+      expect(subject.queued).to eq 1
     end
 
     it "with schedule work" do
       with_scheduled_work_in('queue')
-      subject.scheduled.should == 1
+      expect(subject.scheduled).to eq 1
     end
 
     it "with retry work" do
       with_retry_work_in('queue')
-      subject.retrying.should == 1
+      expect(subject.retrying).to eq 1
     end
   end
 end
