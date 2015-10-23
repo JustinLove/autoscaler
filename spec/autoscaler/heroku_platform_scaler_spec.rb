@@ -1,9 +1,8 @@
 require 'spec_helper'
-require 'autoscaler/heroku_scaler'
-require 'heroku/api/errors'
+require 'autoscaler/heroku_platform_scaler'
 
-describe Autoscaler::HerokuScaler, :api1 => true do
-  let(:cut) {Autoscaler::HerokuScaler}
+describe Autoscaler::HerokuPlatformScaler, :platform_api => true do
+  let(:cut) {Autoscaler::HerokuPlatformScaler}
   let(:client) {cut.new}
   subject {client}
 
@@ -43,7 +42,6 @@ describe Autoscaler::HerokuScaler, :api1 => true do
   end
 
   describe 'exception handling', :focus => true do
-    it_behaves_like 'exception handler', Excon::Errors::SocketError
-    it_behaves_like 'exception handler', Heroku::API::Errors::Error
+    it_behaves_like 'exception handler', Excon::Errors::Error
   end
 end

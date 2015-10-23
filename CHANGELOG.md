@@ -3,11 +3,12 @@
 ## 0.10.0
 
 - Require Sidekiq 3.5
-- Linear Scaling Strategy will not scale down past number of active workers. Assumes 1-1 SK process/dyno mapping.
+- You may use `HerokuPlatformScaler` and `HEROKU_ACCESS_TOKEN` in place of `HerkouScaler` and `HEROKU_API_KEY`
 - QueueSystem#workers returns the number of engaged SK processes.
-- Call the SideKiq quiet api when shutting down
+- Linear Scaling Strategy will not scale down past number of active workers. Assumes 1-1 SK process/dyno mapping.
+- Calls the SideKiq quiet api when shutting down
 - Count workers currently running (Joel Van Horn)
-- Update gems and use RSpec expect syntax
+- Update gems and use RSpec expect syntax (giviger)
 
 ## 0.9.0
 
