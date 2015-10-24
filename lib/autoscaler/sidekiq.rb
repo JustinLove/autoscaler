@@ -1,11 +1,11 @@
 require 'autoscaler/sidekiq/client'
-require 'autoscaler/sidekiq/monitor_middleware_adapter'
+require 'autoscaler/sidekiq/thread_server'
 
 module Autoscaler
   # namespace module for Sidekiq middlewares
   module Sidekiq
     # Sidekiq server middleware
     # Performs scale-down when the queue is empty
-    Server = MonitorMiddlewareAdapter
+    Server = ThreadServer
   end
 end

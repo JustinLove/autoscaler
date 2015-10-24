@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.0
+
+- Replace celluloid monitor with thread based middleware for Sidekiq 4.0
+
 ## 0.10.0
 
 - Require Sidekiq 3.5
