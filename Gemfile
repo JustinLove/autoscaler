@@ -2,6 +2,8 @@ source "http://rubygems.org"
 
 gemspec
 
+gem 'sidekiq', :git => 'https://github.com/mperham/sidekiq.git', :branch => 'internal_rewrite'
+
 group :developent do
   gem 'rb-fsevent', '~> 0.9.1'
 end
