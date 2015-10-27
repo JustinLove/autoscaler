@@ -2,6 +2,8 @@ require 'sidekiq'
 require 'autoscaler/sidekiq'
 require 'autoscaler/heroku_platform_scaler'
 
+# This is setup for a single queue (default) and worker process (worker)
+
 heroku = nil
 if ENV['HEROKU_APP']
   heroku = Autoscaler::HerokuPlatformScaler.new

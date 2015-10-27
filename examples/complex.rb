@@ -2,11 +2,15 @@ require 'sidekiq'
 require 'autoscaler/sidekiq'
 require 'autoscaler/heroku_platform_scaler'
 
+# This setup is for multiple queues, where each queue has a dedicated process type
+
 heroku = nil
 if ENV['HEROKU_APP']
   heroku = {}
   scaleable = %w[default import] - (ENV['ALWAYS'] || '').split(' ')
   scaleable.each do |queue|
+    # We are using the convention that worker process type is the
+    # same as the queue name
     heroku[queue] = Autoscaler::HerokuPlatformScaler.new(
       queue,
       ENV['HEROKU_ACCESS_TOKEN'],
