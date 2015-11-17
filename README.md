@@ -77,6 +77,7 @@ Justin Love, [@wondible](http://twitter.com/wondible), [https://github.com/Justi
 ### Contributors
 
 - Benjamin Kudria [https://github.com/bkudria](https://github.com/bkudria)
+- claudiofullscreen [https://github.com/claudiofullscreen](https://github.com/claudiofullscreen)
 - Fix Peña [https://github.com/fixr](https://github.com/fixr)
 - Gabriel Givigier Guimarães [https://github.com/givigier](https://github.com/givigier)
 - Matt Anderson [https://github.com/tonkapark](https://github.com/tonkapark)
