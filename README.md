@@ -12,7 +12,7 @@ Tested on Ruby 2.1.7 and Heroku Cedar stack.
 
 ## Getting Started
 
-This gem uses the [Heroku Platform-Api](https://github.com/heroku/platform-api.rb) gem, which requires an OAuth token from Heroku.  It will also need the heroku app name.  By default, these are specified through environment variables.  You can also pass them to `HerokuPlatformScaler` explicitly.
+This gem uses the [Heroku Platform-Api](https://github.com/heroku/platform-api) gem, which requires an OAuth token from Heroku.  It will also need the heroku app name.  By default, these are specified through environment variables.  You can also pass them to `HerokuPlatformScaler` explicitly.
 
     HEROKU_ACCESS_TOKEN=.....
     HEROKU_APP=....
