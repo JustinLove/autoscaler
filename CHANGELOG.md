@@ -3,6 +3,7 @@
 ## 0.11.0
 
 - Replace celluloid monitor with thread based middleware for Sidekiq 4.0
+- Tests no longer use use redis namespace
 
 ## 0.10.0
 
