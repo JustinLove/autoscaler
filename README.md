@@ -17,7 +17,7 @@ This gem uses the [Heroku Platform-Api](https://github.com/heroku/platform-api) 
     HEROKU_ACCESS_TOKEN=.....
     HEROKU_APP=....
 
-Support is still present for [Heroku-Api](https://github.com/heroku/heroku.rb) via `HerkouScaler` and `HEROKU_API_KEY`, but may be removed in a future major version.
+Support is still present for [Heroku-Api](https://github.com/heroku/heroku.rb) via `HerokuScaler` and `HEROKU_API_KEY`, but may be removed in a future major version.
 
 Install the middleware in your `Sidekiq.configure_` blocks
 

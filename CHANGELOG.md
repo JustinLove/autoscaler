@@ -8,7 +8,7 @@
 ## 0.10.0
 
 - Require Sidekiq 3.5
-- You may use `HerokuPlatformScaler` and `HEROKU_ACCESS_TOKEN` in place of `HerkouScaler` and `HEROKU_API_KEY`
+- You may use `HerokuPlatformScaler` and `HEROKU_ACCESS_TOKEN` in place of `HerokuScaler` and `HEROKU_API_KEY`
 - QueueSystem#workers returns the number of engaged SK processes.
 - Linear Scaling Strategy will not scale down past number of active workers. Assumes 1-1 SK process/dyno mapping.
 - Calls the SideKiq quiet api when shutting down
