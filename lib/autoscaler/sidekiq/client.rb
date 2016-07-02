@@ -19,9 +19,11 @@ module Autoscaler
         scaler = @scalers[queue]
         p "@@@@@@@ Autoscaler::Sidekiq::Client#call"
         if scaler && scaler.workers < 1
-          # p scaler
-          # scaler.workers = 1
-          scaler.workers = @strategy.call(@system_factory.call(queue), 0)
+          if @strategy && @system_factory
+            scaler.workers = @strategy.call(@system_factory.call(queue), 0)
+          else
+            scaler.workers = 1
+          end
         end
 
         result
