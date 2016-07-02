@@ -21,9 +21,10 @@ module Autoscaler
           p "@@@@@@@ Autoscaler::Sidekiq::Client#call |#{queue}| -1- #{scaler.workers}"
 
           qs = SpecifiedQueueSystem.new([queue])
+          p "@@@@@@@ Autoscaler::Sidekiq::Client#call |#{queue}| -2- #{qs.total_work}"
           workers_count = qs.any_work? ? ((qs.total_work - 1) / 10) + 1 : 0
 
-          p "@@@@@@@ Autoscaler::Sidekiq::Client#call |#{queue}| -2- #{workers_count}"
+          p "@@@@@@@ Autoscaler::Sidekiq::Client#call |#{queue}| -3- #{workers_count}"
 
           scaler.workers = workers_count
         end
