@@ -19,8 +19,9 @@ module Autoscaler
         scaler = @scalers[queue]
         p "@@@@@@@ Autoscaler::Sidekiq::Client#call"
         if scaler && scaler.workers < 1
-          p scaler
-          scaler.workers = 1
+          # p scaler
+          # scaler.workers = 1
+          scaler.workers = @strategy.call(@system_factory.call(queue), 0)
         end
 
         result
@@ -34,11 +35,11 @@ module Autoscaler
       # @yieldreturn [QueueSystem] mostly for testing
       def set_initial_workers(strategy = nil, &system_factory)
         p "@@@@@@@ Autoscaler::Sidekiq::Client#set_initial_workers"
-        p strategy ||= BinaryScalingStrategy.new
-        p system_factory ||= lambda {|queue| SpecifiedQueueSystem.new([queue])}
+        p @strategy ||= strategy || BinaryScalingStrategy.new
+        p @system_factory ||= system_factory || lambda {|queue| SpecifiedQueueSystem.new([queue])}
         @scalers.each do |queue, scaler|
-          p "@@@@@@@ Autoscaler::Sidekiq::Client#set_initial_workers #{strategy.call(system_factory.call(queue), 0)}"
-          scaler.workers = strategy.call(system_factory.call(queue), 0)
+          p "@@@@@@@ Autoscaler::Sidekiq::Client#set_initial_workers #{@strategy.call(system_factory.call(queue), 0)}"
+          scaler.workers = @strategy.call(@system_factory.call(queue), 0)
         end
       end
 
