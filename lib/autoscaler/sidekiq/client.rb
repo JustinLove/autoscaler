@@ -17,16 +17,15 @@ module Autoscaler
         result = yield
 
         scaler = @scalers[queue]
-        p "@@@@@@@ Autoscaler::Sidekiq::Client#call"
-        p queue
-        p "@@@@@@@ Autoscaler::Sidekiq::Client#call -- 1 #{scaler.workers}" if scaler
-        if scaler && scaler.workers < 1
-          p "@@@@@@@ Autoscaler::Sidekiq::Client#call -- 2 #{@strategy} #{@system_factory}"
-          if @strategy && @system_factory
-            scaler.workers = @strategy.call(@system_factory.call(queue), 0)
-          else
-            scaler.workers = 1
-          end
+        if scaler
+          p "@@@@@@@ Autoscaler::Sidekiq::Client#call |#{queue}| -1- #{scaler.workers}"
+
+          qs = SpecifiedQueueSystem.new([queue])
+          workers_count = qs.any_work? ? ((qs.total_work - 1) / 10) + 1 : 0
+
+          p "@@@@@@@ Autoscaler::Sidekiq::Client#call |#{queue}| -2- #{workers_count}"
+
+          scaler.workers = workers_count
         end
 
         result
@@ -39,12 +38,12 @@ module Autoscaler
       # @yieldparam [String] queue mostly for testing
       # @yieldreturn [QueueSystem] mostly for testing
       def set_initial_workers(strategy = nil, &system_factory)
-        p "@@@@@@@ Autoscaler::Sidekiq::Client#set_initial_workers"
-        @strategy ||= strategy || BinaryScalingStrategy.new
-        @system_factory ||= system_factory || lambda {|queue| SpecifiedQueueSystem.new([queue])}
+        # p "@@@@@@@ Autoscaler::Sidekiq::Client#set_initial_workers"
+        strategy ||= BinaryScalingStrategy.new
+        system_factory ||= lambda {|queue| SpecifiedQueueSystem.new([queue])}
         @scalers.each do |queue, scaler|
-          p "@@@@@@@ Autoscaler::Sidekiq::Client#set_initial_workers #{@strategy.call(@system_factory.call(queue), 0)}"
-          scaler.workers = @strategy.call(@system_factory.call(queue), 0)
+          # p "@@@@@@@ Autoscaler::Sidekiq::Client#set_initial_workers #{strategy.call(system_factory.call(queue), 0)}"
+          scaler.workers = strategy.call(system_factory.call(queue), 0)
         end
       end
 
