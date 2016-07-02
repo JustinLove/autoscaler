@@ -17,17 +17,21 @@ module Autoscaler
         result = yield
 
         scaler = @scalers[queue]
-        if scaler
-          p "@@@@@@@ Autoscaler::Sidekiq::Client#call |#{queue}| -1- #{scaler.workers}"
+        p "@@@@@@@@@@@@@@@@@@ Autoscaler::Sidekiq::Client#call |#{queue}| -1- #{scaler.workers}" if scaler
 
-          qs = SpecifiedQueueSystem.new([queue])
-          p "@@@@@@@ Autoscaler::Sidekiq::Client#call |#{queue}| -2- #{qs.total_work}"
-          workers_count = qs.any_work? ? ((qs.total_work - 1) / 10) + 1 : 0
-
-          p "@@@@@@@ Autoscaler::Sidekiq::Client#call |#{queue}| -3- #{workers_count}"
-
-          scaler.workers = workers_count
+        if scaler && scaler.workers < 1
+          scaler.workers = 1
         end
+
+        # if scaler
+        #   qs = SpecifiedQueueSystem.new([queue])
+        #   p "@@@@@@@@@@@@@@@@@@ Autoscaler::Sidekiq::Client#call |#{queue}| -2- #{qs.total_work}"
+        #   workers_count = qs.any_work? ? ((qs.total_work - 1) / 10) + 1 : 1
+
+        #   p "@@@@@@@@@@@@@@@@@@ Autoscaler::Sidekiq::Client#call |#{queue}| -3- #{workers_count}"
+
+        #   scaler.workers = workers_count
+        # end
 
         result
       end
@@ -39,11 +43,11 @@ module Autoscaler
       # @yieldparam [String] queue mostly for testing
       # @yieldreturn [QueueSystem] mostly for testing
       def set_initial_workers(strategy = nil, &system_factory)
-        # p "@@@@@@@ Autoscaler::Sidekiq::Client#set_initial_workers"
+        # p "@@@@@@@@@@@@@@@@@@ Autoscaler::Sidekiq::Client#set_initial_workers"
         strategy ||= BinaryScalingStrategy.new
         system_factory ||= lambda {|queue| SpecifiedQueueSystem.new([queue])}
         @scalers.each do |queue, scaler|
-          # p "@@@@@@@ Autoscaler::Sidekiq::Client#set_initial_workers #{strategy.call(system_factory.call(queue), 0)}"
+          # p "@@@@@@@@@@@@@@@@@@ Autoscaler::Sidekiq::Client#set_initial_workers #{strategy.call(system_factory.call(queue), 0)}"
           scaler.workers = strategy.call(system_factory.call(queue), 0)
         end
       end

@@ -74,7 +74,7 @@ module Autoscaler
     def exception_handler
       @exception_handler ||= lambda {|exception|
         p exception
-        puts exception.backtrace
+        # puts exception.backtrace
       }
     end
   end
