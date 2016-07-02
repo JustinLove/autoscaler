@@ -4,6 +4,7 @@ module Autoscaler
   class AutoScalingStrategy
     #@param [integer] active_workers number of workers when in the active state.
     def initialize(jobs_limit = 100)
+      p "@@@@@@@ Autoscaler::AutoScalingStrategy#new #{jobs_limit}"
       @jobs_limit = jobs_limit
     end
 
@@ -11,6 +12,7 @@ module Autoscaler
     # @param [Numeric] event_idle_time number of seconds since a job related event
     # @return [Integer] target number of workers
     def call(system, event_idle_time)
+      p "@@@@@@@ Autoscaler::AutoScalingStrategy#call #{jobs_count(system)}"
       if active?(system)
         ((jobs_count(system) - 1) / @jobs_limit) + 1
       else
