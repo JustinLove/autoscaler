@@ -44,7 +44,7 @@ module Autoscaler
       end
 
       def last_work?
-        system.total_work == 1
+        @scaler.workers > 1 && system.total_work == 1
       end
 
       def working!(queue, redis)
