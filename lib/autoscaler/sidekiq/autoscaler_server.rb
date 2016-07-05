@@ -17,26 +17,25 @@ module Autoscaler
 
       # Sidekiq middleware api entry point
       def call(worker, msg, queue, redis = ::Sidekiq.method(:redis))
-        # working!(queue, redis)
+        working!(queue, redis)
         yield
       ensure
-        # working!(queue, redis)
+        working!(queue, redis)
         wait_for_task_or_scale(redis)
       end
 
       private
       def wait_for_task_or_scale(redis)
-        loop do
-          return 
-          if pending_work?
-            p " --- pending_work?"
-            sleep(0.5)
-          else
-            p " --- NOT pending_work"
-            @scaler.workers = 0
-          end
-          # return @scaler.workers = 0 if idle?(redis)
+        # loop do
+        #   return if pending_work?
+        #   return @scaler.workers = 0 if idle?(redis)
+        #   sleep(0.5)
+        # end
+        while idle?(redis)
+          p " - idle redis"
+          sleep(1)
         end
+        @scaler.workers = 0 if !pending_work?
       end
 
       attr_reader :system
