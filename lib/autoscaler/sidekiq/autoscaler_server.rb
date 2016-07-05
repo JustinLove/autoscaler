@@ -32,19 +32,19 @@ module Autoscaler
         #   sleep(0.5)
         # end
         while idle?(redis) || !pending_work?
-          p " - idle redis"
           sleep(1)
         end
-        p " - #{@scaler}"
-        p " - #{@scaler.workers}"
-        p " - #{!pending_work?}"
-        @scaler.workers = 0 if !pending_work?
+        @scaler.workers = 0 if last_work?
       end
 
       attr_reader :system
 
       def pending_work?
         system.any_work?
+      end
+
+      def last_work?
+        system.total_work == 1
       end
 
       def working!(queue, redis)
