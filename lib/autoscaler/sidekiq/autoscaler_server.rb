@@ -31,7 +31,7 @@ module Autoscaler
         #   return @scaler.workers = 0 if idle?(redis)
         #   sleep(0.5)
         # end
-        while idle?(redis)
+        while idle?(redis) && pending_work?
           p " - idle redis"
           sleep(1)
         end
