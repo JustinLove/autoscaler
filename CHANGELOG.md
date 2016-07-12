@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.0
+
+- Rewrite ThreadServer use a singleton monitor thread; it was incorrectly creating one per middleware instance, which was per-job
+
 ## 0.11.0
 
 - Replace celluloid monitor with thread based middleware for Sidekiq 4.0
