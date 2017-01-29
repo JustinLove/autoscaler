@@ -1,15 +1,17 @@
-require 'autoscaler/binary_scaling_strategy'
-require 'autoscaler/sidekiq/specified_queue_system'
+require 'autoscaler/auto_scaling_strategy'
+require 'autoscaler/sidekiq/queue_system'
 
 module Autoscaler
   module Sidekiq
     # Sidekiq client middleware
     # Performs scale-up when items are queued and there are no workers running
-    class Client
+    class AutoscalerClient
       # @param [Hash] scalers map of queue(String) => scaler (e.g. {HerokuPlatformScaler}).
       #   Which scaler to use for each sidekiq queue
-      def initialize(scalers)
+      # @param [ScalingStrategy] strategy object that makes most decisions
+      def initialize(scalers, strategy = nil)
         @scalers = scalers
+        @strategy = strategy || AutoScalingStrategy.new
       end
 
       # Sidekiq middleware api method
@@ -17,8 +19,8 @@ module Autoscaler
         result = yield
 
         scaler = @scalers[queue]
-        if scaler && scaler.workers < 1
-          scaler.workers = 1
+        if scaler
+          scaler.workers = @strategy.call(SpecifiedQueueSystem.new([queue]), 0)
         end
 
         result
@@ -31,8 +33,8 @@ module Autoscaler
       # @yieldparam [String] queue mostly for testing
       # @yieldreturn [QueueSystem] mostly for testing
       def set_initial_workers(strategy = nil, &system_factory)
-        strategy ||= BinaryScalingStrategy.new
-        system_factory ||= lambda {|queue| SpecifiedQueueSystem.new([queue])}
+        strategy ||= AutoScalingStrategy.new
+        system_factory ||= lambda { |queue| SpecifiedQueueSystem.new([queue]) }
         @scalers.each do |queue, scaler|
           scaler.workers = strategy.call(system_factory.call(queue), 0)
         end
