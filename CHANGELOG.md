@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.0
+
+- Update version spec to Sidekiq 5
+- redis gem implments `call` for something else since 3.3.0, which was confusing duck sniffing.
+
 ## 0.12.0
 
 - Rewrite ThreadServer use a singleton monitor thread; it was incorrectly creating one per middleware instance, which was per-job

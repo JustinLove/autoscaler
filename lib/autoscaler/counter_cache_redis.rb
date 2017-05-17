@@ -38,7 +38,8 @@ module Autoscaler
     end
 
     def redis(&block)
-      if @redis.respond_to?(:call)
+      # Redis implements call for something else
+      if @redis.respond_to?(:call) && !@redis.kind_of?(Redis)
         @redis.call(&block)
       elsif @redis.respond_to?(:with)
         @redis.with(&block)
