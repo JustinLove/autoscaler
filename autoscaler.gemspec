@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/JustinLove/autoscaler"
   s.summary     = %q{Start/stop Sidekiq workers on Heroku}
   s.description = %q{Currently provides a Sidekiq middleware that does 0/1 scaling of Heroku processes}
+  s.licenses    = ["MIT"]
 
   s.rubyforge_project = "autoscaler"
 
@@ -19,12 +20,12 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_runtime_dependency "sidekiq", '~> 5.0'
-  s.add_runtime_dependency "heroku-api"
-  s.add_runtime_dependency "platform-api"
+  s.add_runtime_dependency "heroku-api", '~> 0.0'
+  s.add_runtime_dependency "platform-api", '~> 2.0'
 
-  s.add_development_dependency "bundler"
-  s.add_development_dependency "rspec"
-  s.add_development_dependency "rspec-its"
-  s.add_development_dependency "guard-rspec"
-  s.add_development_dependency "guard-process"
+  s.add_development_dependency "bundler", '~> 1.0'
+  s.add_development_dependency "rspec", '~> 3.0'
+  s.add_development_dependency "rspec-its", '~> 1.0'
+  s.add_development_dependency "guard-rspec", '~> 4.0'
+  s.add_development_dependency "guard-process", '~> 1.0'
 end
