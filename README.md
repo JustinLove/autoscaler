@@ -14,10 +14,8 @@ Tested on Ruby 2.1.7 and Heroku Cedar stack.
 
 This gem uses the [Heroku Platform-Api](https://github.com/heroku/platform-api) gem, which requires an OAuth token from Heroku.  It will also need the heroku app name.  By default, these are specified through environment variables.  You can also pass them to `HerokuPlatformScaler` explicitly.
 
-    HEROKU_ACCESS_TOKEN=.....
-    HEROKU_APP=....
-
-Support is still present for [Heroku-Api](https://github.com/heroku/heroku.rb) via `HerokuScaler` and `HEROKU_API_KEY`, but may be removed in a future major version.
+    AUTOSCALER_HEROKU_ACCESS_TOKEN=.....
+    AUTOSCALER_HEROKU_APP=....
 
 Install the middleware in your `Sidekiq.configure_` blocks
 
@@ -65,9 +63,9 @@ You can pass a scaling strategy object instead of the timeout to the server midd
 
 The project is setup to run RSpec with Guard.  It expects a redis instance on a custom port, which is started by the Guardfile.
 
-The HerokuPlatformScaler is not tested by default because it makes live API requests.  Specify `HEROKU_APP` and `HEROKU_ACCESS_TOKEN` on the command line, and then watch your app's logs.
+The HerokuPlatformScaler is not tested by default because it makes live API requests.  Specify `AUTOSCALER_HEROKU_APP` and `AUTOSCALER_HEROKU_ACCESS_TOKEN` on the command line, and then watch your app's logs.
 
-    HEROKU_APP=... HEROKU_ACCESS_TOKEN=... guard
+    AUTOSCALER_HEROKU_APP=... AUTOSCALER_HEROKU_ACCESS_TOKEN=... guard
     heroku logs --app ...
 
 ## Authors

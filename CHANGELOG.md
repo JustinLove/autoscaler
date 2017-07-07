@@ -1,9 +1,14 @@
 # Changelog
 
+## 0.14.0
+
+- Heroku has claimed the `HEROKU_` ENV prefix for Herkou-16 stack. The preferred variables are now `AUTOSCALER_HEROKU_APP` and `AUTOSCALER_HEROKU_ACCESS_TOKEN`. (The complex example has been similarly updated.) The old ENV variables will still be accepted, with a warning, but may be removed in a major release. (HerokuScaler was not updated.)
+- Added an obsolescence warning to HerokuScaler, since the old API is no longer available. It may be removed in a major release.
+
 ## 0.13.0
 
 - Update version spec to Sidekiq 5
-- redis gem implments `call` for something else since 3.3.0, which was confusing duck sniffing.
+- redis gem implements `call` for something else since 3.3.0, which was confusing duck sniffing.
 
 ## 0.12.0
 

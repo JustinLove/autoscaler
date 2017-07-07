@@ -3,6 +3,7 @@ require 'autoscaler/counter_cache_memory'
 
 module Autoscaler
   # Wraps the Heroku API to provide just the interface that we need for scaling.
+  #  OBSOLETE: The v1 Heroku API is no longer available, and HerokuScaler will likely be removed in a future major release. Please see current setup instructions and examples for HerokuPlatformScaler.
   class HerokuScaler
     # @param [String] type process type this scaler controls
     # @param [String] key Heroku API key
@@ -11,6 +12,9 @@ module Autoscaler
         type = 'worker',
         key = ENV['HEROKU_API_KEY'],
         app = ENV['HEROKU_APP'])
+
+      warn "Autoscaler: The v1 Heroku API is no longer available, and HerokuScaler will likely be removed in a future major release. Please see current setup instructions and examples for HerokuPlatformScaler."
+
       @client = Heroku::API.new(:api_key => key)
       @type = type
       @app = app

@@ -5,7 +5,7 @@ require 'autoscaler/heroku_platform_scaler'
 # This is setup for a single queue (default) and worker process (worker)
 
 heroku = nil
-if ENV['HEROKU_APP']
+if ENV['AUTOSCALER_HEROKU_APP']
   heroku = Autoscaler::HerokuPlatformScaler.new
   #heroku.exception_handler = lambda {|exception| MyApp.logger.error(exception)}
 end
