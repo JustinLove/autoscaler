@@ -38,7 +38,7 @@ Install the middleware in your `Sidekiq.configure_` blocks
 
 - HerokuPlatformScaler includes an attempt at current-worker cache that may be overcomplication, and doesn't work very well on the server
 - Multiple scale-down loops may be started, particularly if there are multiple jobs queued when the servers comes up.  Heroku seems to handle multiple scale-down commands well.
-- The scale-down monitor is triggered on job completion (and server middleware is only run around jobs), so if the server nevers processes any jobs, it won't turn off.
+- The scale-down monitor is triggered on job completion (and server middleware is only run around jobs), so if the server never processes any jobs, it won't turn off.
 - The retry and schedule lists are considered - if you schedule a long-running task, the process will not scale-down.
 - If background jobs trigger jobs in other scaled processes, please note you'll need `config.client_middleware` in your `Sidekiq.configure_server` block in order to scale-up.
 - Exceptions while calling the Heroku API are caught and printed by default.  See `HerokuPlatformScaler#exception_handler` to override
