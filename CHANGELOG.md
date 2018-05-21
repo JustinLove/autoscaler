@@ -1,10 +1,15 @@
 # Changelog
 
-- Implemented named arguments for several classes.
+## 1.0.0
+
+Potentially breaking changes
+
+- Implemented named arguments for several classes. (Breaking if you instantiated these classes with arguments)
   - `HerokuPlatformScaler`
   - `BinaryScalingStrategy`
   - `LinearScalingStrategy`
   - `DelayedShutdown`
+- As consequence of above, specifies min ruby version 2.1
 - Remove depreciated ENV variables `HEROKU_ACCESS_TOKEN` and `HERKOU_APP`
 - `HerokuScaler` has been removed, as the old API has been disabled by Heroku. (See <https://devcenter.heroku.com/changelog-items/1181>)
   Consider to use `HerokuPlatformScaler`.
