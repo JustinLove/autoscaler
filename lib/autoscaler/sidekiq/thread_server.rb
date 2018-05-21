@@ -32,7 +32,7 @@ module Autoscaler
         if timeout.respond_to?(:call)
           timeout
         else
-          DelayedShutdown.new(BinaryScalingStrategy.new, timeout)
+          DelayedShutdown.new(strategy: BinaryScalingStrategy.new, timeout: timeout)
         end
       end
 

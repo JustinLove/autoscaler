@@ -1,5 +1,10 @@
 # Changelog
 
+- Implemented named arguments for several classes.
+  - `HerokuPlatformScaler`
+  - `BinaryScalingStrategy`
+  - `LinearScalingStrategy`
+  - `DelayedShutdown`
 - Remove depreciated ENV variables `HEROKU_ACCESS_TOKEN` and `HERKOU_APP`
 - `HerokuScaler` has been removed, as the old API has been disabled by Heroku. (See <https://devcenter.heroku.com/changelog-items/1181>)
   Consider to use `HerokuPlatformScaler`.

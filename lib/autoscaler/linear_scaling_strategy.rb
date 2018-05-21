@@ -5,7 +5,7 @@ module Autoscaler
     #@param [integer] max_workers     maximum number of workers to spin up.
     #@param [integer] worker_capacity the amount of jobs one worker can handle
     #@param [float]   min_factor      minimum work required to scale, as percentage of worker_capacity
-    def initialize(max_workers = 1, worker_capacity = 25, min_factor = 0)
+    def initialize(max_workers: 1, worker_capacity: 25, min_factor: 0)
       @max_workers             = max_workers # max # of workers we can scale to
       @total_capacity          = (@max_workers * worker_capacity).to_f # total capacity of max workers
       min_capacity             = [0, min_factor].max.to_f * worker_capacity # min capacity required to scale first worker

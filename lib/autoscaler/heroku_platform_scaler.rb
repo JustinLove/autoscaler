@@ -8,9 +8,9 @@ module Autoscaler
     # @param [String] token Heroku OAuth access token
     # @param [String] app Heroku app name
     def initialize(
-        type = 'worker',
-        token = ENV['AUTOSCALER_HEROKU_ACCESS_TOKEN'],
-        app = ENV['AUTOSCALER_HEROKU_APP'])
+        type: 'worker',
+        token: ENV['AUTOSCALER_HEROKU_ACCESS_TOKEN'],
+        app: ENV['AUTOSCALER_HEROKU_APP'])
 
       @client = PlatformAPI.connect_oauth(token)
       @type = type

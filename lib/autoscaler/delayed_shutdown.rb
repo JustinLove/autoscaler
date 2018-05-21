@@ -3,7 +3,7 @@ module Autoscaler
   class DelayedShutdown
     # @param [ScalingStrategy] strategy object that makes most decisions
     # @param [Numeric] timeout number of seconds to stay up after base strategy says zero
-    def initialize(strategy, timeout)
+    def initialize(strategy:, timeout:)
       @strategy = strategy
       @timeout = timeout
       active_now!

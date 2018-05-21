@@ -3,7 +3,7 @@ module Autoscaler
   # The default strategy has a single worker when there is anything, or shuts it down.
   class BinaryScalingStrategy
     #@param [integer] active_workers number of workers when in the active state.
-    def initialize(active_workers = 1)
+    def initialize(active_workers: 1)
       @active_workers = active_workers
     end
 

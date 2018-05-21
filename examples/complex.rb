@@ -12,9 +12,9 @@ if ENV['AUTOSCALER_HEROKU_APP']
     # We are using the convention that worker process type is the
     # same as the queue name
     heroku[queue] = Autoscaler::HerokuPlatformScaler.new(
-      queue,
-      ENV['AUTOSCALER_HEROKU_ACCESS_TOKEN'],
-      ENV['AUTOSCALER_HEROKU_APP'])
+      type: queue,
+      token: ENV['AUTOSCALER_HEROKU_ACCESS_TOKEN'],
+      app: ENV['AUTOSCALER_HEROKU_APP'])
   end
 end
 
