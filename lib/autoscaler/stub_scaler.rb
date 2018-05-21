@@ -1,5 +1,3 @@
-require 'heroku-api'
-
 module Autoscaler
   # A minimal scaler to use as stub for local testing
   class StubScaler

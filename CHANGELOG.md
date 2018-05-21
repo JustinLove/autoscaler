@@ -1,5 +1,8 @@
 # Changelog
 
+- `HerokuScaler` has been removed, as the old API has been disabled by Heroku. (See <https://devcenter.heroku.com/changelog-items/1181>)
+  Consider to use `HerokuPlatformScaler`.
+
 ## 0.14.0
 
 - Heroku has claimed the `HEROKU_` ENV prefix for Herkou-16 stack. The preferred variables are now `AUTOSCALER_HEROKU_APP` and `AUTOSCALER_HEROKU_ACCESS_TOKEN`. (The complex example has been similarly updated.) The old ENV variables will still be accepted, with a warning, but may be removed in a major release. (HerokuScaler was not updated.)
