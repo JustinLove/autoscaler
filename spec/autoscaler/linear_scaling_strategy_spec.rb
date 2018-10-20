@@ -82,4 +82,10 @@ describe Autoscaler::LinearScalingStrategy do
     strategy = cut.new(max_workers: 0, worker_capacity: 0)
     expect(strategy.call(system, 5)).to eq 0
   end
+
+  it "doesn't scale below min workers even without work" do
+    system = TestSystem.new(0, 0)
+    strategy = cut.new(min_workers: 1)
+    expect(strategy.call(system, 1)).to eq 1
+  end
 end
