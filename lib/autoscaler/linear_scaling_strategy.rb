@@ -2,10 +2,12 @@ module Autoscaler
   # Strategies determine the target number of workers
   # This strategy sets the number of workers to be proportional to the number of enqueued jobs.
   class LinearScalingStrategy
+    #@param [integer] min_workers     minimum number of workers to keep up
     #@param [integer] max_workers     maximum number of workers to spin up.
     #@param [integer] worker_capacity the amount of jobs one worker can handle
     #@param [float]   min_factor      minimum work required to scale, as percentage of worker_capacity
-    def initialize(max_workers: 1, worker_capacity: 25, min_factor: 0)
+    def initialize(min_workers: 0, max_workers: 1, worker_capacity: 25, min_factor: 0)
+      @min_workers             = min_workers # min # of workers we can scale to
       @max_workers             = max_workers # max # of workers we can scale to
       @total_capacity          = (@max_workers * worker_capacity).to_f # total capacity of max workers
       min_capacity             = [0, min_factor].max.to_f * worker_capacity # min capacity required to scale first worker
@@ -25,7 +27,8 @@ module Autoscaler
       scaled_capacity_percentage = scale_factor * @total_capacity
 
       ideal_workers = ([0, scaled_capacity_percentage].max * @max_workers).ceil
-      min_workers   = [system.workers, ideal_workers].max  # Don't scale down past number of currently engaged workers
+      # Don't scale down past number of currently engaged workers and parameterized minimum of workers
+      min_workers   = [system.workers, @min_workers, ideal_workers].max
       max_workers   = [min_workers,  @max_workers].min     # Don't scale up past number of max workers
 
       return [min_workers, max_workers].min
