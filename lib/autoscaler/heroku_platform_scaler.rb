@@ -57,28 +57,30 @@ module Autoscaler
     end
 
     private
+
     attr_reader :client
 
     def heroku_get_workers
-      client.formation.list(app)
-        .select {|item| item['type'] == type}
-        .map {|item| item['quantity']}
-        .reduce(0, &:+)
-    rescue Excon::Errors::Error => e
+      client
+        .formation
+        .list(app)
+        .select { |item| item['type'] == type }
+        .sum { |item| item['quantity'] }
+    rescue Excon::Error => e
       exception_handler.call(e)
       0
     end
 
-    def heroku_set_workers(n)
-      client.formation.update(app, type, {:quantity => n})
-    rescue Excon::Errors::Error, Heroku::API::Errors::Error => e
+    def heroku_set_workers(worker_quantity)
+      client.formation.update(app, type, { quantity: worker_quantity })
+    rescue Excon::Error, Heroku::API::Errors::Error => e
       exception_handler.call(e)
     end
 
     def exception_handler
-      @exception_handler ||= lambda {|exception|
+      @exception_handler ||= lambda { |exception|
         p exception
-        puts exception.backtrace
+        puts JSON.parse(exception.response.data.fetch(:body, '{}'))
       }
     end
   end
